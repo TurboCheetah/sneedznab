@@ -4,9 +4,8 @@ import { SNEEDEX_URL, TOSHO_URL } from '#/constants'
 const apiRoute = new Hono()
 
 apiRoute.get('/', async c => {
-  const fullQuery = c.req.query('q')
-  // remove "S01E01" from query
-  const query = fullQuery.replace(/S\d+E\d+/, '')
+  const query = c.req.query('q')
+
   const returnType = c.req.query('response')
   const sneedexData = await fetch(
     `${SNEEDEX_URL}/search?key=${process.env.API_KEY}&c=50&q=${query}`
@@ -105,7 +104,6 @@ apiRoute.get('/', async c => {
         })
     }
   }
-  console.log(returnType, 'yes')
 
   if (returnType === 'json') {
     return c.json(
