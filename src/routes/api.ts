@@ -1,21 +1,19 @@
 import { Hono } from 'hono'
 import { SNEEDEX_URL, TOSHO_URL } from '#/constants'
 
-const searchRoute = new Hono()
+const apiRoute = new Hono()
 
-searchRoute.get('/', async c => {
+apiRoute.get('/', async c => {
   const fullQuery = c.req.query('q')
   // remove "S01E01" from query
   const query = fullQuery.replace(/S\d+E\d+/, '')
-  const returnType = c.req.query('type')
+  const returnType = c.req.query('response')
   const sneedexData = await fetch(
     `${SNEEDEX_URL}/search?key=${process.env.API_KEY}&c=50&q=${query}`
   ).then(res => {
     if (!res.ok) throw new Error(res.statusText)
     return res.json()
   })
-
-  if (!sneedexData[0]) return c.json({ releases: [] }, 404)
 
   const usenetReleases: {
     title: string
@@ -36,6 +34,21 @@ searchRoute.get('/', async c => {
     files: number
     timestamp: Date
   }[] = []
+
+  if (!sneedexData[0] && returnType === 'json') {
+    return c.json({ usenetReleases, torrentReleases }, 404)
+  } else if (!sneedexData[0]) {
+    return c.body(
+      `<?xml version="1.0" encoding="UTF-8"?>
+    <rss version="1.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:newznab="http://www.newznab.com/DTD/2010/feeds/attributes/" xmlns:torznab="http://torznab.com/schemas/2015/feed">
+    <channel>
+        <newznab:response offset="0" total="0"/>
+    </channel>
+    </rss>`,
+      200,
+      { application: 'rss+xml', 'content-type': 'rss+xml' }
+    )
+  }
 
   for (const release of sneedexData[0].releases) {
     const bestReleases = release.best_links.length
@@ -59,7 +72,8 @@ searchRoute.get('/', async c => {
       return res.json()
     })
 
-    // find the first release from toshoData that has the property status equal to "complete"
+    // find the first release from toshoData that matches the criteria
+    // @ts-ignore
     const toshoRelease = toshoData.find((data: any) =>
       nyaaRelease
         ? data.nyaa_id === +nyaaRelease
@@ -91,11 +105,26 @@ searchRoute.get('/', async c => {
         })
     }
   }
+  console.log(returnType, 'yes')
 
   if (returnType === 'json') {
     return c.json(
       { usenetReleases, torrentReleases },
       usenetReleases.length + torrentReleases.length ? 200 : 404
+    )
+  }
+
+  // if there are no releases, return a 200 with the proper torznab response
+  if (!usenetReleases.length && !torrentReleases.length) {
+    return c.body(
+      `<?xml version="1.0" encoding="UTF-8"?>
+    <rss version="1.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:newznab="http://www.newznab.com/DTD/2010/feeds/attributes/" xmlns:torznab="http://torznab.com/schemas/2015/feed">
+    <channel>
+        <newznab:response offset="0" total="0"/>
+    </channel>
+    </rss>`,
+      200,
+      { application: 'rss+xml', 'content-type': 'rss+xml' }
     )
   }
 
@@ -165,11 +194,7 @@ searchRoute.get('/', async c => {
     </channel>
   </rss>`
 
-  return c.body(
-    rss,
-    usenetReleases.length + torrentReleases.length ? 200 : 404,
-    { application: 'rss+xml', 'content-type': 'rss+xml' }
-  )
+  return c.body(rss, 200, { application: 'rss+xml', 'content-type': 'rss+xml' })
 })
 
-export default searchRoute
+export default apiRoute
