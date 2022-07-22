@@ -8,21 +8,21 @@ apiRoute.get('/', async c => {
     return c.body(
       `<?xml version="1.0" encoding="UTF-8"?>
       <caps>
-        <server version="1.0" title="Anime Tosho" strapline="Anime NZB/DDL mirror" url="https://animetosho.org/"/>
-        <limits max="200" default="75"/><
-        retention days="9999"/>
-        <registration available="no" open="yes" />
+        <server version="1.0" title="Sneedex" strapline="Anime releases with the best video+subs" url="https://sneedex.moe/"/>
+        <limits max="200" default="75"/>
+        <retention days="9999"/>
+        <registration available="no" open="yes"/>
         <searching>
-          <search available="yes" supportedParams="q" />
-          <tv-search available="no" supportedParams="q" />
-          <movie-search available="no" supportedParams="q" />
+          <search available="yes" supportedParams="q"/>
+          <tv-search available="no" supportedParams="q"/>
+          <movie-search available="no" supportedParams="q"/>
         </searching>
         <categories>
           <category id="5070" name="Anime" description="Anime"/>
         </categories>
       </caps>`,
       200,
-      { application: 'rss+xml', 'content-type': 'rss+xml' }
+      { 'content-type': 'text/xml' }
     )
   } else if (c.req.query('t') === 'search') {
     const query = c.req.query('q')
