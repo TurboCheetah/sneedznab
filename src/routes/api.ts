@@ -31,7 +31,16 @@ apiRoute.get('/', async c => {
     // if no query is specified, return Sneedex
     if (!query) {
       const rss = rssBuilder(
-        [],
+        [
+          {
+            title: '[hydes] Akira v2 [BDRip 1920x1032 x264 FLAC][Dual-Audio]',
+            link: 'https://animetosho.org/view/hydes-akira-v2-bdrip-1920x1032-x264-flac-dual-audio.n1548873',
+            url: 'https://animetosho.org/storage/nzbs/0007ae76/%5Bhydes%5D%20Akira%20%28BDRip%201920x1032%20x264%20FLAC%29.nzb',
+            size: 26473019160,
+            files: 1,
+            timestamp: 1656898675
+          }
+        ],
         [
           {
             title:
