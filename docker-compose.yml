@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  sneedex-indexer:
+    image: ghcr.io/turbocheetah/sneedex-indexer:master
+    container_name: sneedex-indexer
+    ports:
+      - '3000:3000'
+    restart: 'unless-stopped'
