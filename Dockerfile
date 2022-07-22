@@ -24,7 +24,7 @@ RUN addgroup \
 COPY package.json bun.lockb ./
 
 RUN sed -i 's/"prepare": "husky install"/"prepare": ""/' ./package.json \
-    && bun install -p
+    && bun install -p --no-save
 
 COPY . .
 
