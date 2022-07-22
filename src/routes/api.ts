@@ -30,11 +30,26 @@ apiRoute.get('/', async c => {
     const query = c.req.query('q')
     // if no query is specified, return Sneedex
     if (!query) {
-      const rss = rssBuilder([], [])
+      const rss = rssBuilder(
+        [],
+        [
+          {
+            title:
+              '[IK] High School DxD (D�D+New+BorN+Hero) [BD 1920x1080 x264 FLAC] [Uncensored] [Dual Audio] [Anime+Manga+Light Novel+OST] V3',
+            link: 'https://animetosho.org/view/ik-high-school-dxd-dd-new-born-hero.n1479910',
+            url: 'https://animetosho.org/storage/torrent/ae29524587aaeddee035229031f3b2ca2ed646c6/%5BIK%5D%20High%20School%20DxD%20%28D%C3%97D%2BNew%2BBorN%2BHero%29%20%5BBD%201920x1080%20x264%20FLAC%5D%20%5BUncensored%5D%20%5BDual%20Audio%5D%20%5BAnime%2BManga%2BLight%20Novel%2BOST%5D%20V3.torrent',
+            seeders: 13,
+            peers: 22,
+            infohash: 'ae29524587aaeddee035229031f3b2ca2ed646c6',
+            size: 123796771251,
+            files: 718,
+            timestamp: 1642614696
+          }
+        ]
+      )
 
       return c.body(rss, 200, {
-        application: 'rss+xml',
-        'content-type': 'rss+xml'
+        application: 'rss+xml'
       })
     }
 
@@ -60,7 +75,7 @@ apiRoute.get('/', async c => {
     </channel>
     </rss>`,
         200,
-        { application: 'rss+xml', 'content-type': 'rss+xml' }
+        { application: 'rss+xml' }
       )
     }
 
@@ -138,7 +153,7 @@ apiRoute.get('/', async c => {
     </channel>
     </rss>`,
         200,
-        { application: 'rss+xml', 'content-type': 'rss+xml' }
+        { application: 'rss+xml' }
       )
     }
 
@@ -146,8 +161,7 @@ apiRoute.get('/', async c => {
     const rss = rssBuilder(usenetReleases, torrentReleases)
 
     return c.body(rss, 200, {
-      application: 'rss+xml',
-      'content-type': 'rss+xml'
+      application: 'rss+xml'
     })
   }
 })

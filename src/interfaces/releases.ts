@@ -4,7 +4,7 @@ export interface UsenetRelease {
   url: string
   size: number
   files: number
-  timestamp: Date
+  timestamp: number
 }
 
 export interface TorrentRelease {
@@ -16,5 +16,5 @@ export interface TorrentRelease {
   size: number
   infohash: string
   files: number
-  timestamp: Date
+  timestamp: number
 }
