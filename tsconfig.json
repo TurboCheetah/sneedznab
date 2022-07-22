@@ -9,7 +9,9 @@
     "baseUrl": "src",
     "paths": {
       "#/*": ["*"],
+      "#interfaces/*": ["interfaces/*"],
       "#routes/*": ["routes/*"],
+      "#utils/*": ["utils/*"],
     },
   }
 }
