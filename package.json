@@ -26,15 +26,15 @@
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",
-    "@typescript-eslint/eslint-plugin": "5.36.2",
-    "@typescript-eslint/parser": "5.36.2",
+    "@typescript-eslint/eslint-plugin": "5.37.0",
+    "@typescript-eslint/parser": "5.37.0",
     "bun-types": "0.1.11",
-    "eslint": "8.23.0",
+    "eslint": "8.23.1",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
     "husky": "8.0.1",
     "lint-staged": "13.0.3",
-    "nodemon": "2.0.19",
+    "nodemon": "2.0.20",
     "prettier": "2.7.1"
   },
   "lint-staged": {
