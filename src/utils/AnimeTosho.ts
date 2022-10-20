@@ -1,11 +1,10 @@
 import { TOSHO_URL } from '#/constants'
-import { ToshoData } from '#interfaces/AnimeTosho'
-import { Data } from '#interfaces/Data'
-import { Provider } from '#interfaces/Provider'
+import { ToshoData } from '#interfaces/animeTosho'
+import { Data, Provider } from '#interfaces/provider'
 
 export class AnimeTosho implements Provider {
   // provider specific fetch function to retrieve raw data
-  private async fetch(query: string): ToshoData[] {
+  private async fetch(query: string): Promise<ToshoData[]> {
     const data = await fetch(
       `${TOSHO_URL}?t=search&extended=1&limit=100&offset=0&q=${encodeURIComponent(
         query
@@ -15,11 +14,11 @@ export class AnimeTosho implements Provider {
       return res.json()
     })
 
-    return data
+    return data as ToshoData[]
   }
 
   // get function to standardize the returned data to make things easier to work with and plug-and-play
-  public async get(query: string): Data[] {
+  public async get(query: string): Promise<Data[]> {
     // shrimply fetch the data and then map it to the appropriate values
     const data = await this.fetch(query)
     return data.map(entry => ({

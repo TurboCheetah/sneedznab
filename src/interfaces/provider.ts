@@ -1,6 +1,9 @@
-import { Data } from '#interfaces/Data'
+export interface Data {
+  title: string
+  url: string
+  type: 'usenet' | 'torrent'
+}
 
 export interface Provider {
-  fetch(): any
-  get(): Data[]
+  get(query: string): Promise<Data[]>
 }

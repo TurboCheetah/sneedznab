@@ -8,7 +8,8 @@
     "start": "bun run src/index.ts",
     "dev": "nodemon",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "bun run lint --fix && prettier --write src/"
+    "lint:fix": "bun run lint --fix && prettier --write src/",
+    "typecheck": "tsc"
   },
   "repository": {
     "type": "git",
