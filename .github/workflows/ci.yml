@@ -7,14 +7,6 @@ on:
     branches: ["*"]
 
 jobs:
-  lint-pr-title:
-    runs-on: ubuntu-latest
-    name: Validate PR Title
-    steps:
-      - uses: amannn/action-semantic-pull-request@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   lint:
     runs-on: ubuntu-latest
     name: Run ESLint
@@ -31,6 +23,7 @@ jobs:
         id: pnpm-install
         with:
           run_install: false
+          version: 7
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
@@ -63,6 +56,7 @@ jobs:
         id: pnpm-install
         with:
           run_install: false
+          version: 7
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
