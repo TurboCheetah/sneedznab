@@ -8,9 +8,7 @@
     "start": "bun run src/index.ts",
     "dev": "nodemon",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "bun run lint --fix && prettier --write src/",
-    "docker": "docker-compose -f \"docker-compose.yml\" up -d --build",
-    "prepare": "husky install"
+    "lint:fix": "bun run lint --fix && prettier --write src/"
   },
   "repository": {
     "type": "git",
@@ -32,14 +30,7 @@
     "eslint": "8.25.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
-    "husky": "8.0.1",
-    "lint-staged": "13.0.3",
     "nodemon": "2.0.20",
     "prettier": "2.7.1"
-  },
-  "lint-staged": {
-    "src/*.ts": [
-      "bun run lint:fix"
-    ]
   }
 }
