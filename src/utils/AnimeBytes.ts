@@ -25,10 +25,14 @@ export class AnimeBytes implements Provider {
     const data = await this.fetch(query)
     // extract the value of "Property" and "Link" from the "Torrents" array
     // and then map it to the appropriate values
-    return data.Groups[0].Torrents.map(entry => ({
-      title: entry.Property,
-      url: entry.Link,
-      type: 'torrent'
-    })).flat() as Data[]
+    // only parse the group where CategoryName === "Anime"
+
+    return data.Groups.filter(group => group.CategoryName === 'Anime')[0]
+      .Torrents.map(entry => ({
+        title: entry.Property,
+        url: entry.Link,
+        type: 'torrent'
+      }))
+      .flat() as Data[]
   }
 }
