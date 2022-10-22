@@ -1,4 +1,4 @@
-export interface SneedexData {
+export interface ISneedexData {
   confidence: number
   uuid: string
   title: string

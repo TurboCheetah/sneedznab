@@ -1,8 +1,8 @@
-import { TorrentRelease, UsenetRelease } from '#interfaces/releases'
+import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 
 export const rssBuilder = (
-  usenetReleases: UsenetRelease[],
-  torrentReleases: TorrentRelease[]
+  usenetReleases: IUsenetRelease[],
+  torrentReleases: ITorrentRelease[]
 ): string => {
   // for each release, add an item to the rss feed
   return `<?xml version="1.0" encoding="UTF-8"?>

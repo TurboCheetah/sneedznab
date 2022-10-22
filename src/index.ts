@@ -1,18 +1,29 @@
-import { Hono } from 'hono'
-import { logger } from 'hono/logger'
-import apiRoute from '#routes/api'
+import { App } from '#/app'
+import { ApiRoute } from '#routes/api'
+import { AnimeTosho } from '#utils/AnimeTosho'
+import { AnimeBytes } from '#utils/AnimeBytes'
+import { RedisCache } from '#utils/redis'
+import { Redis } from '@upstash/redis'
 
-const app = new Hono()
-
-app.use('*', logger())
-app.onError((err, c) => {
-  console.error(`${err}`)
-  return c.json({ message: err.message }, 500)
-})
-app.get('/', c => c.json({ message: 'OK' }))
-app.route('/api', apiRoute)
+export const app = new App(
+  // new SimpleCache(new NodeCache({ stdTTL: process.env.CACHE_TTL, checkperiod: 10 })),
+  new RedisCache(
+    new Redis({
+      url: process.env.REDIS_URL,
+      token: process.env.REDIS_TOKEN
+    })
+  ),
+  [
+    new AnimeTosho(),
+    new AnimeBytes(
+      process.env.ANIMEBYTES_PASSKEY,
+      process.env.ANIMEBYTES_USERNAME
+    )
+  ],
+  [new ApiRoute()]
+)
 
 export default {
-  port: 3000,
-  fetch: app.fetch
+  port: process.env.port || 3000,
+  fetch: app.getServer().fetch
 }

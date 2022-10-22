@@ -1,4 +1,4 @@
-export interface ToshoData {
+export interface IToshoData {
   id: number
   title: string
   link: string

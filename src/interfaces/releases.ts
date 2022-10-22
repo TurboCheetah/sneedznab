@@ -1,4 +1,4 @@
-export interface UsenetRelease {
+export interface IUsenetRelease {
   title: string
   link: string
   url: string
@@ -7,7 +7,7 @@ export interface UsenetRelease {
   timestamp: number
 }
 
-export interface TorrentRelease {
+export interface ITorrentRelease {
   title: string
   link: string
   url: string

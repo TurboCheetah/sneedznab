@@ -1,4 +1,4 @@
-export interface AnimeBytesData {
+export interface IAnimeBytesData {
   Matches: number
   Limit: number
   Results: string

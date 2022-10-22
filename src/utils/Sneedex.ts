@@ -1,10 +1,10 @@
 import { SNEEDEX_URL } from '#/constants'
-import { SneedexData } from '#interfaces/sneedex'
+import { ISneedexData } from '#interfaces/sneedex'
 
 export class Sneedex {
   constructor(private apiKey: string) {}
 
-  public async fetch(query: string): Promise<SneedexData[]> {
+  public async fetch(query: string): Promise<ISneedexData[]> {
     const sneedexData = await fetch(
       `${SNEEDEX_URL}/search?key=${this.apiKey}&c=50&q=${query}`
     ).then(res => {
@@ -12,6 +12,6 @@ export class Sneedex {
       return res.json()
     })
 
-    return sneedexData as SneedexData[]
+    return sneedexData as ISneedexData[]
   }
 }

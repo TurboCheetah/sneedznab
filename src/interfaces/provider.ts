@@ -1,9 +1,9 @@
-export interface Data {
+export interface IData {
   title: string
   url: string
   type: 'usenet' | 'torrent'
 }
 
-export interface Provider {
-  get(query: string): Promise<Data[]>
+export interface IProvider {
+  get(query: string): Promise<IData[]>
 }
