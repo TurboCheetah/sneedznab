@@ -6,7 +6,8 @@ export class RedisCache implements ICache {
   constructor(private redis: Redis) {}
 
   public async set(key: string, value: IData[]): Promise<void> {
-    await this.redis.set(key, value, { ex: process.env.CACHE_TTL })
+    // Convert CACHE_TTL to a number so tsc doesn't complain
+    await this.redis.set(key, value, { ex: +process.env.CACHE_TTL })
     return
   }
 
