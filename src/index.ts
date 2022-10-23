@@ -4,15 +4,19 @@ import { AnimeTosho } from '#utils/AnimeTosho'
 import { AnimeBytes } from '#utils/AnimeBytes'
 import { RedisCache } from '#utils/redis'
 import { Redis } from '@upstash/redis'
+import { SimpleCache } from '#utils/simpleCache'
+import * as NodeCache from 'node-cache'
 
 export const app = new App(
-  // new SimpleCache(new NodeCache({ stdTTL: process.env.CACHE_TTL, checkperiod: 10 })),
-  new RedisCache(
-    new Redis({
-      url: process.env.REDIS_URL,
-      token: process.env.REDIS_TOKEN
-    })
+  new SimpleCache(
+    new NodeCache({ stdTTL: process.env.CACHE_TTL, checkperiod: 10 })
   ),
+  // new RedisCache(
+  //   new Redis({
+  //     url: process.env.REDIS_URL,
+  //     token: process.env.REDIS_TOKEN
+  //   })
+  // ),
   [
     new AnimeTosho(),
     new AnimeBytes(

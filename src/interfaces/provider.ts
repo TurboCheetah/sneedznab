@@ -1,3 +1,5 @@
+import { ISneedexData } from '#interfaces/sneedex'
+
 export interface IData {
   title: string
   url: string
@@ -5,5 +7,5 @@ export interface IData {
 }
 
 export interface IProvider {
-  get(query: string): Promise<IData[]>
+  get(anime: string, sneedexData: ISneedexData): Promise<IData[]>
 }

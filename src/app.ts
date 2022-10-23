@@ -4,9 +4,11 @@ import { ICache } from '#interfaces/cache'
 import { IProvider } from '#interfaces/provider'
 import { IRoute } from '#interfaces/route'
 import { ApiRoute } from '#routes/api'
+import { Sneedex } from '#utils/Sneedex'
 
 export class App {
   public app: Hono
+  public sneedex: Sneedex
   constructor(
     public cache: ICache,
     public providers: IProvider[],
@@ -16,6 +18,7 @@ export class App {
     this.cache = cache
     this.providers = providers
     this.routes = routes
+    this.sneedex = new Sneedex(process.env.SNEEDEX_APIKEY)
 
     this.initializeMiddlewares()
     this.initializeRoutes()

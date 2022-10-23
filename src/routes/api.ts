@@ -36,7 +36,7 @@ export class ApiRoute implements IRoute {
       return c.json(results, 200)
     })
 
-    this.router.get('/old', async c => {
+    this.router.get('/prowlarr', async c => {
       if (c.req.query('t') === 'caps') {
         return c.body(
           `<?xml version="1.0" encoding="UTF-8"?>
@@ -95,16 +95,25 @@ export class ApiRoute implements IRoute {
         }
 
         const returnType = c.req.query('response')
-        const sneedexData = await fetch(
-          `${SNEEDEX_URL}/search?key=${process.env.API_KEY}&c=50&q=${query}`
-        ).then(res => {
-          if (!res.ok) throw new Error(res.statusText)
-          return res.json()
-        })
+
+        // Sonarr requests in the format Attack on Titan : S04E28 (87)
+        const sonarrQuery = query.split(':')[0]
+        // check cache first
+        const cachedData = await app.cache.get(`api_${sonarrQuery}`)
+        if (cachedData) {
+          if (returnType === 'json') return c.json(cachedData)
+
+          return c.body(rssBuilder(cachedData[0], cachedData[1]), 200, {
+            application: 'rss+xml'
+          })
+        }
+
+        const sneedexData = await app.sneedex.fetch(sonarrQuery)
 
         const usenetReleases: IUsenetRelease[] = []
         const torrentReleases: ITorrentRelease[] = []
 
+        // Return empty if no results
         if (!sneedexData[0] && returnType === 'json') {
           return c.json({ usenetReleases, torrentReleases }, 404)
         } else if (!sneedexData[0]) {
@@ -120,64 +129,33 @@ export class ApiRoute implements IRoute {
           )
         }
 
+        // Releases are typically just each individual season
         for (const release of sneedexData[0].releases) {
-          const bestReleases = release.best_links.length
-            ? release.best_links.split(' ')
-            : release.alt_links.split(' ')
+          const sneedQuery = `${release.best ? release.best : release.alt} ${
+            sneedexData[0].title
+          }`
 
-          // check if there is a Nyaa release
-          let nyaaRelease = bestReleases.find((url: string) =>
-            url.includes('nyaa.si/view/')
-          )
+          const results = (
+            await Promise.all(
+              app.providers.map(
+                async provider =>
+                  await provider.get(sneedexData[0].title, release)
+              )
+            )
+          ).flat()
 
-          // if there is, extract its ID
-          if (nyaaRelease)
-            nyaaRelease = nyaaRelease.match(/nyaa.si\/view\/(\d+)/)[1]
-
-          const toshoData = await fetch(
-            `${TOSHO_URL}?t=search&extended=1&q=${encodeURIComponent(
-              `${release.best ? release.best : release.alt} ${
-                sneedexData[0].title
-              }`
-            )}&limit=100&offset=0`
-          ).then(res => {
-            if (!res.ok) throw new Error(res.statusText)
-            return res.json()
-          })
-
-          // find the first release from toshoData that matches the criteria
-          // @ts-ignore
-          const toshoRelease = toshoData.find((data: any) =>
-            nyaaRelease
-              ? data.nyaa_id === +nyaaRelease
-              : data.title.includes(release.best ? release.best : release.alt)
-          )
-
-          // if a valid release was found, reutrn the nzb url property
-          if (toshoRelease) {
-            if (!toshoRelease.nzb_url)
-              torrentReleases.push({
-                title: toshoRelease.title,
-                link: toshoRelease.link,
-                url: toshoRelease.torrent_url,
-                seeders: toshoRelease.seeders,
-                peers: toshoRelease.leechers,
-                infohash: toshoRelease.info_hash,
-                size: toshoRelease.total_size,
-                files: toshoRelease.num_files,
-                timestamp: toshoRelease.timestamp
-              })
-            else
-              usenetReleases.push({
-                title: toshoRelease.title,
-                link: toshoRelease.link,
-                url: toshoRelease.nzb_url,
-                size: toshoRelease.total_size,
-                files: toshoRelease.num_files,
-                timestamp: toshoRelease.timestamp
-              })
+          // push each result to either usenetReleases or torrentReleases
+          for (const result of results) {
+            if (!result) continue
+            result.type === 'usenet'
+              ? usenetReleases.push(result)
+              : torrentReleases.push(result)
           }
         }
+        await app.cache.set(`api_${sonarrQuery}`, {
+          usenetReleases,
+          torrentReleases
+        })
 
         if (returnType === 'json') {
           return c.json(
