@@ -17,6 +17,6 @@ export interface ITorrentRelease {
   size: number
   infohash: string
   files: number
-  timestamp: number
+  timestamp: number | string
   type: 'torrent'
 }

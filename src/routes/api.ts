@@ -19,23 +19,6 @@ export class ApiRoute implements IRoute {
   }
 
   private initializeRoutes() {
-    this.router.get('/', async c => {
-      const query = c.req.query('q')
-      if (!query) return c.json({ message: 'No query specified' }, 400)
-      const cachedData = await app.cache.get(query)
-      if (cachedData) return c.json(cachedData)
-
-      const results = (
-        await Promise.all(
-          app.providers.map(async provider => await provider.get(query))
-        )
-      ).flat()
-
-      await app.cache.set(query, results)
-
-      return c.json(results, 200)
-    })
-
     this.router.get('/prowlarr', async c => {
       if (c.req.query('t') === 'caps') {
         return c.body(
@@ -70,7 +53,8 @@ export class ApiRoute implements IRoute {
                 url: 'https://animetosho.org/storage/nzbs/0007ae76/%5Bhydes%5D%20Akira%20%28BDRip%201920x1032%20x264%20FLAC%29.nzb',
                 size: 26473019160,
                 files: 1,
-                timestamp: 1656898675
+                timestamp: 1656898675,
+                type: 'usenet'
               }
             ],
             [
@@ -84,7 +68,8 @@ export class ApiRoute implements IRoute {
                 infohash: 'ae29524587aaeddee035229031f3b2ca2ed646c6',
                 size: 123796771251,
                 files: 718,
-                timestamp: 1642614696
+                timestamp: 1642614696,
+                type: 'torrent'
               }
             ]
           )
@@ -103,9 +88,13 @@ export class ApiRoute implements IRoute {
         if (cachedData) {
           if (returnType === 'json') return c.json(cachedData)
 
-          return c.body(rssBuilder(cachedData[0], cachedData[1]), 200, {
-            application: 'rss+xml'
-          })
+          return c.body(
+            rssBuilder(cachedData.usenetReleases, cachedData.torrentReleases),
+            200,
+            {
+              application: 'rss+xml'
+            }
+          )
         }
 
         const sneedexData = await app.sneedex.fetch(sonarrQuery)

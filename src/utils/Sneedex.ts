@@ -16,7 +16,7 @@ export class Sneedex {
       return res.json()
     })
 
-    await app.cache.set(`sneedex_${query}`, sneedexData)
+    await app.cache.set(`sneedex_${query}`, sneedexData as ISneedexData[])
 
     return sneedexData as ISneedexData[]
   }

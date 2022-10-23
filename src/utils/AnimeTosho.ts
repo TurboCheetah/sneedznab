@@ -1,8 +1,8 @@
 import { TOSHO_URL } from '#/constants'
 import { IToshoData } from '#interfaces/animeTosho'
-import { IData, IProvider } from '#interfaces/provider'
+import { IProvider } from '#interfaces/provider'
 import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
-import { ISneedexData } from '#interfaces/sneedex'
+import { ISneedexRelease } from '#interfaces/sneedex'
 import { app } from '#/index'
 
 export class AnimeTosho implements IProvider {
@@ -28,8 +28,8 @@ export class AnimeTosho implements IProvider {
   // get function to standardize the returned data to make things easier to work with and plug-and-play
   public async get(
     anime: string,
-    sneedexData: ISneedexData
-  ): Promise<IUsenetRelease | ITorrentRelease> {
+    sneedexData: ISneedexRelease
+  ): Promise<IUsenetRelease[] | ITorrentRelease[]> {
     // shrimply fetch the data and then map it to the appropriate values
     const data = await this.fetch(
       `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${anime}`
@@ -58,29 +58,33 @@ export class AnimeTosho implements IProvider {
 
     // if the release is on usenet, return it as a usenet release
     if (matchedRelease.nzb_url) {
-      return {
-        title: matchedRelease.title,
-        link: matchedRelease.link,
-        url: matchedRelease.nzb_url,
-        size: matchedRelease.total_size,
-        files: matchedRelease.num_files,
-        timestamp: matchedRelease.timestamp,
-        type: 'usenet'
-      } as IUsenetRelease
+      return [
+        {
+          title: matchedRelease.title,
+          link: matchedRelease.link,
+          url: matchedRelease.nzb_url,
+          size: matchedRelease.total_size,
+          files: matchedRelease.num_files,
+          timestamp: matchedRelease.timestamp,
+          type: 'usenet'
+        }
+      ] as IUsenetRelease[]
     }
 
     // if the release is on torrent, return it as a torrent release
-    return {
-      title: matchedRelease.title,
-      link: matchedRelease.link,
-      url: matchedRelease.torrent_url,
-      seeders: matchedRelease.seeders,
-      peers: matchedRelease.leechers,
-      infohash: matchedRelease.info_hash,
-      size: matchedRelease.total_size,
-      files: matchedRelease.num_files,
-      timestamp: matchedRelease.timestamp,
-      type: 'torrent'
-    } as ITorrentRelease
+    return [
+      {
+        title: matchedRelease.title,
+        link: matchedRelease.link,
+        url: matchedRelease.torrent_url,
+        seeders: matchedRelease.seeders,
+        peers: matchedRelease.leechers,
+        infohash: matchedRelease.info_hash,
+        size: matchedRelease.total_size,
+        files: matchedRelease.num_files,
+        timestamp: matchedRelease.timestamp,
+        type: 'torrent'
+      }
+    ] as ITorrentRelease[]
   }
 }

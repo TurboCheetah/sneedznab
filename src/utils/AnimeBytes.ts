@@ -1,8 +1,8 @@
 import { ANIMEBYTES_URL } from '#/constants'
 import { IAnimeBytesData } from '#interfaces/animeBytes'
-import { IData, IProvider } from '#interfaces/provider'
+import { IProvider } from '#interfaces/provider'
 import { ITorrentRelease } from '#interfaces/releases'
-import { ISneedexData } from '#interfaces/sneedex'
+import { ISneedexRelease } from '#interfaces/sneedex'
 import { app } from '#/index'
 
 export class AnimeBytes implements IProvider {
@@ -30,8 +30,8 @@ export class AnimeBytes implements IProvider {
   // get function to standardize the returned data to make things easier to work with and plug-and-play
   public async get(
     anime: string,
-    sneedexData: ISneedexData
-  ): Promise<ITorrentRelease> {
+    sneedexData: ISneedexRelease
+  ): Promise<ITorrentRelease[]> {
     const bestReleaseLinks =
       sneedexData.best_links.split(' ') || sneedexData.alt_links.split(' ')
 
@@ -71,8 +71,8 @@ export class AnimeBytes implements IProvider {
         link: torrent.Link,
         url: torrent.Link,
         seeders: torrent.Seeders,
-        leechers: torrent.Leechers,
-        infohash: torrent.InfoHash,
+        peers: torrent.Leechers,
+        infohash: null,
         size: torrent.Size,
         files: torrent.FileCount,
         timestamp: torrent.UploadTime,

@@ -9,7 +9,7 @@ import * as NodeCache from 'node-cache'
 
 export const app = new App(
   new SimpleCache(
-    new NodeCache({ stdTTL: process.env.CACHE_TTL, checkperiod: 10 })
+    new NodeCache({ stdTTL: +process.env.CACHE_TTL, checkperiod: 10 })
   ),
   // new RedisCache(
   //   new Redis({

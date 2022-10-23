@@ -1,11 +1,9 @@
-import { ISneedexData } from '#interfaces/sneedex'
-
-export interface IData {
-  title: string
-  url: string
-  type: 'usenet' | 'torrent'
-}
+import { ISneedexRelease } from '#interfaces/sneedex'
+import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 
 export interface IProvider {
-  get(anime: string, sneedexData: ISneedexData): Promise<IData[]>
+  get(
+    anime: string,
+    sneedexData: ISneedexRelease
+  ): Promise<ITorrentRelease[] | IUsenetRelease[]>
 }
