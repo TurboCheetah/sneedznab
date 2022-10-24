@@ -66,19 +66,31 @@ export class AnimeBytes implements IProvider {
       // only parse the torrents where the torrent id is in the torrentIDs array
       // and then map it to the appropriate values
       .filter(torrent => torrentIDs.includes(torrent.ID))
-      .map(torrent => ({
-        title: torrent.Property,
-        link: torrent.Link,
-        url: torrent.Link,
-        seeders: torrent.Seeders,
-        leechers: torrent.Leechers,
-        infohash: null,
-        size: torrent.Size,
-        files: torrent.FileCount,
-        timestamp: torrent.UploadTime,
-        grabs: torrent.Snatched,
-        type: 'torrent'
-      }))
+      .map(torrent => {
+        const props = torrent.Property.split('|').map(s => s.trim())
+        // format the title to TVDB format
+        return {
+          title: `${anime} ${sneedexData.type} [${props[3]} ${props[0]} ${
+            props[2]
+          } ${props[4]}${
+            props[7] ? props[5].replace('Dual Audio', ' Dual-Audio') : ''
+          }]-${
+            props[7]
+              ? props[6].match(/\((.*?)\)/g)[0].replace(/\(|\)/g, '')
+              : props[5].match(/\((.*?)\)/g)[0].replace(/\(|\)/g, '')
+          }`,
+          link: torrent.Link,
+          url: torrent.Link,
+          seeders: torrent.Seeders,
+          leechers: torrent.Leechers,
+          infohash: null,
+          size: torrent.Size,
+          files: torrent.FileCount,
+          timestamp: torrent.UploadTime,
+          grabs: torrent.Snatched,
+          type: 'torrent'
+        }
+      })
 
     return animeData as ITorrentRelease[]
   }

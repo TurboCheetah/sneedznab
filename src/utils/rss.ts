@@ -33,7 +33,7 @@ export const rssBuilder = (
 				<newznab:attr name="traktid" value="0" />
 				<newznab:attr name="doubanid" value="0" />
 				<newznab:attr name="files" value="${release.files}" />
-				<newznab:attr name="grabs" value="${release.grabs || 0}" />
+				<newznab:attr name="grabs" value="${release.grabs}" />
 				</item>`
         )
         .join('')}
@@ -60,7 +60,7 @@ export const rssBuilder = (
 					<torznab:attr name="traktid" value="0" />
 					<torznab:attr name="doubanid" value="0" />
 					<torznab:attr name="files" value="${release.files}" />
-					<torznab:attr name="grabs" value="${release.grabs || 0}" />
+					<torznab:attr name="grabs" value="${release.grabs}" />
 					<torznab:attr name="seeders" value="${release.seeders}" />
 					<torznab:attr name="peers" value="${release.seeders + release.leechers}" />
 					<torznab:attr name="infohash" value="${release.infohash}" />
