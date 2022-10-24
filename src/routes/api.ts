@@ -84,7 +84,9 @@ export class ApiRoute implements IRoute {
         const returnType = c.req.query('response')
 
         // Sonarr requests in the format Attack on Titan : S04E28 (87)
-        const sonarrQuery = query.split(':')[0]
+        // TODO: somehow make this work for titles like RE:Zero since it has a colon in it
+        const sonarrQuery = query.split(' : ')[0]
+
         // check cache first
         const cachedData = await app.cache.get(`api_${sonarrQuery}`)
         if (cachedData) {
