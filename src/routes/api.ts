@@ -19,7 +19,7 @@ export class ApiRoute implements IRoute {
   }
 
   private initializeRoutes() {
-    this.router.get('/prowlarr', async c => {
+    this.router.get('/', async c => {
       if (c.req.query('t') === 'caps') {
         return c.body(
           `<?xml version="1.0" encoding="UTF-8"?>
