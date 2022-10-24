@@ -70,19 +70,22 @@ export class AnimeBytes implements IProvider {
       .map(torrent => {
         const props = torrent.Property.split('|').map(s => s.trim())
 
+        // the release group is always after the text "softsubs", so we can just find the part that includes that then use a regex
+        const releaseGroup = props
+          .find(prop => prop.includes('subs'))
+          .match(/\((.*?)\)/)[1]
+
+        const dualAudio = props.find(prop =>
+          prop.toLowerCase().includes('dual audio')
+        )
+
         // format the title to TVDB format
         return {
           title: `${anime}${sneedexData.type ? ` ${sneedexData.type}` : ''} [${
             props[3]
           } ${props[0]} ${props[2]} ${props[4]}${
-            props[7] ? props[5].replace('Dual Audio', ' Dual-Audio') : ''
-          }]-${
-            props[8]
-              ? props[7].match(/\((.*?)\)/g)[0].replace(/\(|\)/g, '')
-              : props[7]
-              ? props[6].match(/\((.*?)\)/g)[0].replace(/\(|\)/g, '')
-              : props[5].match(/\((.*?)\)/g)[0].replace(/\(|\)/g, '')
-          }`,
+            dualAudio ? ' Dual Audio' : ''
+          }]-${releaseGroup}`,
           link: torrent.Link,
           url: torrent.Link,
           seeders: torrent.Seeders,
