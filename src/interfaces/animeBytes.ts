@@ -41,7 +41,7 @@ export interface IAnimeBytesData {
       RawUpMultiplier: number
       Link: string
       Property: string
-      Snacthed: number
+      Snatched: number
       Seeders: number
       Leechers: number
       Size: number

@@ -76,6 +76,7 @@ export class AnimeBytes implements IProvider {
         size: torrent.Size,
         files: torrent.FileCount,
         timestamp: torrent.UploadTime,
+        grabs: torrent.Snatched,
         type: 'torrent'
       }))
 

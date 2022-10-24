@@ -66,6 +66,7 @@ export class AnimeTosho implements IProvider {
           size: matchedRelease.total_size,
           files: matchedRelease.num_files,
           timestamp: matchedRelease.timestamp,
+          grabs: null,
           type: 'usenet'
         }
       ] as IUsenetRelease[]
@@ -83,6 +84,7 @@ export class AnimeTosho implements IProvider {
         size: matchedRelease.total_size,
         files: matchedRelease.num_files,
         timestamp: matchedRelease.timestamp,
+        grabs: null,
         type: 'torrent'
       }
     ] as ITorrentRelease[]

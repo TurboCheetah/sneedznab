@@ -54,6 +54,7 @@ export class ApiRoute implements IRoute {
                 size: 26473019160,
                 files: 1,
                 timestamp: 1656898675,
+                grabs: 69,
                 type: 'usenet'
               }
             ],
@@ -69,6 +70,7 @@ export class ApiRoute implements IRoute {
                 size: 123796771251,
                 files: 718,
                 timestamp: 1642614696,
+                grabs: 69,
                 type: 'torrent'
               }
             ]
