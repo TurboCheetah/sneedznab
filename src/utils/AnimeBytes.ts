@@ -32,14 +32,14 @@ export class AnimeBytes implements IProvider {
     anime: string,
     sneedexData: ISneedexRelease
   ): Promise<ITorrentRelease[]> {
-    const bestReleaseLinks =
-      sneedexData.best_links.split(' ') || sneedexData.alt_links.split(' ')
+    const bestReleaseLinks = sneedexData.best_links.length
+      ? sneedexData.best_links.split(' ')
+      : sneedexData.alt_links.split(' ')
 
     // get all animebytes ursl from best release links
     const animebytesLink = bestReleaseLinks.filter(link =>
       link.includes('animebytes')
     )
-    // .map(link => link.split('/').pop())
 
     // if there is no AB link, return null because parsing the data is pointless
     if (!animebytesLink.length) return null
@@ -54,6 +54,7 @@ export class AnimeBytes implements IProvider {
 
     // shrimply fetch the data and then map it to the appropriate values
     const data = await this.fetch(anime)
+
     // if no data was found, return null
     if (data.Results === '0') return null
 

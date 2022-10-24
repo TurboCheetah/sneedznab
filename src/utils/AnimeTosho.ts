@@ -40,10 +40,10 @@ export class AnimeTosho implements IProvider {
       : sneedexData.alt_links.split(' ')
 
     // check if one of the returned releases is on Nyaa for Usenet cope
-
-    const nyaaID = bestReleaseLinks
-      .find((url: string) => url.includes('nyaa.si/view/'))
-      .match(/nyaa.si\/view\/(\d+)/)[1]
+    const nyaaLink = bestReleaseLinks.find((url: string) =>
+      url.includes('nyaa.si/view/')
+    )
+    const nyaaID = nyaaLink ? nyaaLink.match(/nyaa.si\/view\/(\d+)/)[1] : null
 
     const matchedRelease = data.find((data: IToshoData) =>
       nyaaID
