@@ -1,5 +1,20 @@
 import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 
+export const escape = (str: string): string => {
+  // replace ampersands with &amp;
+  // replace < with &lt;
+  // replace > with &gt;
+  // replace " with &quot;
+  // replace ' with &apos;
+
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
+
 export const rssBuilder = (
   usenetReleases: IUsenetRelease[],
   torrentReleases: ITorrentRelease[]
@@ -14,7 +29,7 @@ export const rssBuilder = (
         .map(
           release => `
 				  <item>
-					<title>${release.title}</title>
+					<title>${escape(release.title)}</title>
 					<description />
 					<guid>${release.link}</guid>
 					<comments>${release.link}</comments>
@@ -41,7 +56,7 @@ export const rssBuilder = (
         .map(
           release => `
 				  <item>
-					<title>${release.title}</title>
+					<title>${escape(release.title)}</title>
 					<description />
 					<guid>${release.link}</guid>
 					<comments>${release.link}</comments>
