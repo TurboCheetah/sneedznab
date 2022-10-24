@@ -10,7 +10,9 @@ export class Sneedex {
     if (cachedData) return cachedData as ISneedexData[]
 
     const sneedexData = await fetch(
-      `${SNEEDEX_URL}/search?key=${this.apiKey}&c=50&q=${query}`
+      `${SNEEDEX_URL}/search?key=${this.apiKey}&c=50&q=${encodeURIComponent(
+        query
+      )}`
     ).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
