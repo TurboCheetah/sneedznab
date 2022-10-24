@@ -4,7 +4,7 @@ export interface IUsenetRelease {
   url: string
   size: number
   files: number
-  timestamp: number
+  timestamp: string
   grabs: number
   type: 'usenet'
 }
@@ -18,7 +18,7 @@ export interface ITorrentRelease {
   size: number
   infohash: string
   files: number
-  timestamp: number | string
+  timestamp: string
   grabs: number
   type: 'torrent'
 }

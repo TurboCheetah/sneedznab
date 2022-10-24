@@ -53,7 +53,7 @@ export class ApiRoute implements IRoute {
                 url: 'https://animetosho.org/storage/nzbs/0007ae76/%5Bhydes%5D%20Akira%20%28BDRip%201920x1032%20x264%20FLAC%29.nzb',
                 size: 26473019160,
                 files: 1,
-                timestamp: 1656898675,
+                timestamp: '2022-07-03 20:37:55',
                 grabs: 69,
                 type: 'usenet'
               }
@@ -69,7 +69,7 @@ export class ApiRoute implements IRoute {
                 infohash: 'ae29524587aaeddee035229031f3b2ca2ed646c6',
                 size: 123796771251,
                 files: 718,
-                timestamp: 1642614696,
+                timestamp: '2022-01-19 12:51:36',
                 grabs: 69,
                 type: 'torrent'
               }

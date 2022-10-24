@@ -56,6 +56,19 @@ export class AnimeTosho implements IProvider {
     // if a valid release was found, reutrn it
     if (!matchedRelease) return null
 
+    // convert matchedRelease.timestamp to the format YYYY-MM-DD HH:MM:SS
+    const date = new Date(matchedRelease.timestamp * 1000)
+    const year = date.getFullYear()
+    const month = `0${date.getMonth() + 1}`.slice(-2)
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+    const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+    const minutes =
+      date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+    const seconds =
+      date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+
     // if the release is on usenet, return it as a usenet release
     if (matchedRelease.nzb_url) {
       return [
@@ -65,7 +78,7 @@ export class AnimeTosho implements IProvider {
           url: matchedRelease.nzb_url,
           size: matchedRelease.total_size,
           files: matchedRelease.num_files,
-          timestamp: matchedRelease.timestamp,
+          timestamp: formattedDate,
           grabs: null,
           type: 'usenet'
         }
@@ -83,7 +96,7 @@ export class AnimeTosho implements IProvider {
         infohash: matchedRelease.info_hash,
         size: matchedRelease.total_size,
         files: matchedRelease.num_files,
-        timestamp: matchedRelease.timestamp,
+        timestamp: formattedDate,
         grabs: null,
         type: 'torrent'
       }
