@@ -71,7 +71,7 @@ export class AnimeBytes implements IProvider {
         link: torrent.Link,
         url: torrent.Link,
         seeders: torrent.Seeders,
-        peers: torrent.Leechers,
+        leechers: torrent.Leechers,
         infohash: null,
         size: torrent.Size,
         files: torrent.FileCount,

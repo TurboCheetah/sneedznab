@@ -78,7 +78,7 @@ export class AnimeTosho implements IProvider {
         link: matchedRelease.link,
         url: matchedRelease.torrent_url,
         seeders: matchedRelease.seeders,
-        peers: matchedRelease.leechers,
+        leechers: matchedRelease.leechers,
         infohash: matchedRelease.info_hash,
         size: matchedRelease.total_size,
         files: matchedRelease.num_files,

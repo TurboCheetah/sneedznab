@@ -62,7 +62,7 @@ export const rssBuilder = (
 					<torznab:attr name="files" value="${release.files}" />
 					<torznab:attr name="grabs" value="69" />
 					<torznab:attr name="seeders" value="${release.seeders}" />
-					<torznab:attr name="peers" value="${release.peers}" />
+					<torznab:attr name="peers" value="${release.seeders + release.leechers}" />
 					<torznab:attr name="infohash" value="${release.infohash}" />
 				  </item>`
         )

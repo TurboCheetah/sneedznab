@@ -13,7 +13,7 @@ export interface ITorrentRelease {
   link: string
   url: string
   seeders: number
-  peers: number
+  leechers: number
   size: number
   infohash: string
   files: number
