@@ -21,18 +21,18 @@
   },
   "homepage": "https://github.com/TurboCheetah/sneedex-indexer#readme",
   "dependencies": {
-    "hono": "2.4.1",
+    "hono": "2.5.1",
     "typescript": "4.8.4"
   },
   "devDependencies": {
     "@types/eslint": "8.4.10",
-    "@typescript-eslint/eslint-plugin": "5.42.0",
-    "@typescript-eslint/parser": "5.42.0",
+    "@typescript-eslint/eslint-plugin": "5.42.1",
+    "@typescript-eslint/parser": "5.42.1",
     "bun-types": "0.2.2",
     "eslint": "8.27.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
-    "husky": "8.0.1",
+    "husky": "8.0.2",
     "lint-staged": "13.0.3",
     "nodemon": "2.0.20",
     "prettier": "2.7.1"
