@@ -53,7 +53,7 @@ export class AnimeTosho implements IProvider {
           )
     )
 
-    // if a valid release was found, reutrn it
+    // if no valid release was found, reutrn null
     if (!matchedRelease) return null
 
     // convert matchedRelease.timestamp to the format YYYY-MM-DD HH:MM:SS

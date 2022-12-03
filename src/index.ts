@@ -8,17 +8,22 @@ import { SimpleCache } from '#utils/simpleCache'
 import * as NodeCache from 'node-cache'
 
 export const app = new App(
+  // If you would like to use Redis instead, comment out the line below and uncomment the Redis part
   new SimpleCache(
     new NodeCache({ stdTTL: +process.env.CACHE_TTL, checkperiod: 10 })
   ),
-  // new RedisCache(
-  //   new Redis({
-  //     url: process.env.REDIS_URL,
-  //     token: process.env.REDIS_TOKEN
-  //   })
-  // ),
+  /*
+  new RedisCache(
+    new Redis({
+      url: process.env.REDIS_URL,
+      token: process.env.REDIS_TOKEN
+    })
+  ),
+    */
   [
+    // AnimeTosho is used instead of scraping Nyaa
     new AnimeTosho(),
+    // Only enable AnimeBytes if you have an account
     new AnimeBytes(
       process.env.ANIMEBYTES_PASSKEY,
       process.env.ANIMEBYTES_USERNAME
