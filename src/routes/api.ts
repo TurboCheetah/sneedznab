@@ -41,47 +41,10 @@ export class ApiRoute implements IRoute {
           { 'content-type': 'text/xml' }
         )
       } else if (c.req.query('t') === 'search') {
-        const query = c.req.query('q')
-        // if no query is specified, return Sneedex
-        if (!query) {
-          const rss = rssBuilder(
-            [
-              {
-                title:
-                  '[hydes] Akira v2 [BDRip 1920x1032 x264 FLAC][Dual-Audio]',
-                link: 'https://animetosho.org/view/hydes-akira-v2-bdrip-1920x1032-x264-flac-dual-audio.n1548873',
-                url: 'https://animetosho.org/storage/nzbs/0007ae76/%5Bhydes%5D%20Akira%20%28BDRip%201920x1032%20x264%20FLAC%29.nzb',
-                size: 26473019160,
-                files: 1,
-                timestamp: '2022-07-03 20:37:55',
-                grabs: 69,
-                type: 'usenet'
-              }
-            ],
-            [
-              {
-                title:
-                  '[IK] High School DxD (D�D+New+BorN+Hero) [BD 1920x1080 x264 FLAC] [Uncensored] [Dual Audio] [Anime+Manga+Light Novel+OST] V3',
-                link: 'https://animetosho.org/view/ik-high-school-dxd-dd-new-born-hero.n1479910',
-                url: 'https://animetosho.org/storage/torrent/ae29524587aaeddee035229031f3b2ca2ed646c6/%5BIK%5D%20High%20School%20DxD%20%28D%C3%97D%2BNew%2BBorN%2BHero%29%20%5BBD%201920x1080%20x264%20FLAC%5D%20%5BUncensored%5D%20%5BDual%20Audio%5D%20%5BAnime%2BManga%2BLight%20Novel%2BOST%5D%20V3.torrent',
-                seeders: 13,
-                leechers: 22,
-                infohash: 'ae29524587aaeddee035229031f3b2ca2ed646c6',
-                size: 123796771251,
-                files: 718,
-                timestamp: '2022-01-19 12:51:36',
-                grabs: 69,
-                type: 'torrent'
-              }
-            ]
-          )
-
-          return c.body(rss, 200, {
-            application: 'rss+xml'
-          })
-        }
-
         const returnType = c.req.query('response')
+        let query = c.req.query('q')
+        // if query is unspecified, e.g when Prowlarr is testing it, set it to DxD to test it
+        if (!query) query = 'High School DxD'
 
         // Sonarr requests in the format Attack on Titan : S04E28 (87)
         // TODO: somehow make this work for titles like RE:Zero since it has a colon in it
