@@ -14,12 +14,12 @@ export class Sneedex {
   public async fetch(query: string): Promise<ISneedexData[]> {
     debugLog(`${this.name}: ${query}`)
     debugLog(`${this.name} (cache): ${query}`)
-    const cachedData = await app.cache.get(`sneedex_${query}`)
+    const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(`${this.name} (cache): Cache hit: sneedex_${query}`)
+      debugLog(`${this.name} (cache): Cache hit: ${this.name}_${query}`)
       return cachedData as ISneedexData[]
     }
-    debugLog(`${this.name} (cache): Cache miss: sneedex_${query}`)
+    debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
 
     const searchURL = `${sneedexUrl}/search?key=${
       this.apiKey
@@ -37,8 +37,10 @@ export class Sneedex {
       return res.json()
     })
 
-    debugLog(`${this.name} (fetch): Fetched data, caching sneedex_${query}`)
-    await app.cache.set(`sneedex_${query}`, sneedexData as ISneedexData[])
+    debugLog(
+      `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
+    )
+    await app.cache.set(`${this.name}_${query}`, sneedexData as ISneedexData[])
 
     return sneedexData as ISneedexData[]
   }

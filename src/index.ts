@@ -2,6 +2,7 @@ import { App } from '#/app'
 import { ApiRoute } from '#routes/api'
 import { AnimeTosho } from '#utils/AnimeTosho'
 import { AnimeBytes } from '#utils/AnimeBytes'
+import { Rutracker } from '#utils/Rutracker'
 import { RedisCache } from '#utils/redis'
 import { Redis } from '@upstash/redis'
 import { SimpleCache } from '#utils/simpleCache'
@@ -27,7 +28,8 @@ export const app = new App(
     new AnimeBytes(
       process.env.ANIMEBYTES_PASSKEY,
       process.env.ANIMEBYTES_USERNAME
-    )
+    ),
+    new Rutracker()
   ],
   [new ApiRoute()],
   process.env.NODE_ENV === 'development'

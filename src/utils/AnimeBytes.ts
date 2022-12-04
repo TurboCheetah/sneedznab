@@ -21,12 +21,12 @@ export class AnimeBytes implements IProvider {
   private async fetch(query: string): Promise<IAnimeBytesData> {
     debugLog(`${this.name}: ${query}`)
     debugLog(`${this.name} (cache): tosho_${query}`)
-    const cachedData = await app.cache.get(`animebytes_${query}`)
+    const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(`${this.name} (cache): Cache hit: animebytes_${query}`)
+      debugLog(`${this.name} (cache): Cache hit: ${this.name}_${query}`)
       return cachedData as IAnimeBytesData
     }
-    debugLog(`${this.name} (cache): Cache miss: animebytes_${query}`)
+    debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
 
     const searchURL = `${animebytesUrl}?torrent_pass=${this.passkey}&username=${
       this.username
@@ -45,8 +45,10 @@ export class AnimeBytes implements IProvider {
       return res.json()
     })
 
-    debugLog(`${this.name} (fetch): Fetched data, caching animebytes_${query}`)
-    await app.cache.set(`animebytes_${query}`, data)
+    debugLog(
+      `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
+    )
+    await app.cache.set(`${this.name}_${query}`, data)
 
     return data as IAnimeBytesData
   }

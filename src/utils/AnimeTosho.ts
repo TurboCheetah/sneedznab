@@ -13,13 +13,13 @@ export class AnimeTosho implements IProvider {
 
   // provider specific fetch function to retrieve raw data
   private async fetch(query: string): Promise<IToshoData[]> {
-    debugLog(`${this.name} (cache): tosho_${query}`)
-    const cachedData = await app.cache.get(`tosho_${query}`)
+    debugLog(`${this.name} (cache): ${this.name}_${query}`)
+    const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(`${this.name} (cache): Cache hit: tosho_${query}`)
+      debugLog(`${this.name} (cache): Cache hit: ${this.name}_${query}`)
       return cachedData as IToshoData[]
     }
-    debugLog(`${this.name} (cache): Cache miss: tosho_${query}`)
+    debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
 
     const searchURL = `${toshoUrl}?t=search&extended=1&limit=100&offset=0&q=${encodeURIComponent(
       query
@@ -33,8 +33,10 @@ export class AnimeTosho implements IProvider {
       return res.json()
     })
 
-    debugLog(`${this.name} (fetch): Fetched data, caching tosho_${query}`)
-    await app.cache.set(`tosho_${query}`, data)
+    debugLog(
+      `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
+    )
+    await app.cache.set(`${this.name}_${query}`, data)
 
     return data as IToshoData[]
   }
@@ -99,7 +101,7 @@ export class AnimeTosho implements IProvider {
       ] as IUsenetRelease[]
     }
 
-    // if the release is on torrent, return it as a torrent release
+    // if the release is a torrent, return it as a torrent release
     return [
       {
         title: matchedRelease.title,

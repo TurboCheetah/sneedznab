@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
-import { SNEEDEX_URL, TOSHO_URL } from '#/constants'
 import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 import { IRoute } from '#interfaces/route'
-import { rssBuilder } from '#/utils/rss'
 import { app } from '#/index'
+import { debugLog } from '#utils/debugLog'
+import { rssBuilder } from '#/utils/rss'
 
 export const apiHono = new Hono()
 export class ApiRoute implements IRoute {
@@ -51,8 +51,11 @@ export class ApiRoute implements IRoute {
         const sonarrQuery = query.split(' : ')[0]
 
         // check cache first
+        debugLog(`API (cache): api_${query}`)
         const cachedData = await app.cache.get(`api_${sonarrQuery}`)
+
         if (cachedData) {
+          debugLog(`API (cache): Cache hit: api_${query}`)
           if (returnType === 'json') return c.json(cachedData)
 
           return c.body(
@@ -63,26 +66,36 @@ export class ApiRoute implements IRoute {
             }
           )
         }
+        debugLog(`API (cache): Cache miss: api_${query}`)
 
+        debugLog(`API (fetch): ${sonarrQuery}`)
         const sneedexData = await app.sneedex.fetch(sonarrQuery)
 
         const usenetReleases: IUsenetRelease[] = []
         const torrentReleases: ITorrentRelease[] = []
 
         // Return empty if no results
-        if (!sneedexData[0] && returnType === 'json') {
-          return c.json({ usenetReleases, torrentReleases }, 404)
-        } else if (!sneedexData[0]) {
-          return c.body(
-            `<?xml version="1.0" encoding="UTF-8"?>
+        if (!sneedexData[0]) {
+          debugLog(`API (fetch): No results found, caching api_${query}`)
+          await app.cache.set(`api_${sonarrQuery}`, {
+            usenetReleases,
+            torrentReleases
+          })
+
+          if (returnType === 'json') {
+            return c.json({ usenetReleases, torrentReleases }, 404)
+          } else {
+            return c.body(
+              `<?xml version="1.0" encoding="UTF-8"?>
     <rss version="1.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:newznab="http://www.newznab.com/DTD/2010/feeds/attributes/" xmlns:torznab="http://torznab.com/schemas/2015/feed">
     <channel>
         <newznab:response offset="0" total="0"/>
     </channel>
     </rss>`,
-            200,
-            { application: 'rss+xml' }
-          )
+              200,
+              { application: 'rss+xml' }
+            )
+          }
         }
 
         // Releases are typically just each individual season
@@ -108,6 +121,8 @@ export class ApiRoute implements IRoute {
               : torrentReleases.push(result)
           }
         }
+
+        debugLog(`API (fetch): Fetched data, caching api_${sonarrQuery}`)
         await app.cache.set(`api_${sonarrQuery}`, {
           usenetReleases,
           torrentReleases
