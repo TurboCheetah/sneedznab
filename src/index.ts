@@ -29,7 +29,8 @@ export const app = new App(
       process.env.ANIMEBYTES_USERNAME
     )
   ],
-  [new ApiRoute()]
+  [new ApiRoute()],
+  process.env.NODE_ENV === 'development'
 )
 
 export default {

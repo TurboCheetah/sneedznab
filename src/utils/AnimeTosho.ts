@@ -1,25 +1,39 @@
-import { TOSHO_URL } from '#/constants'
+import { toshoUrl } from '#/constants'
 import { IToshoData } from '#interfaces/animeTosho'
 import { IProvider } from '#interfaces/provider'
 import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 import { ISneedexRelease } from '#interfaces/sneedex'
 import { app } from '#/index'
+import { debugLog } from '#utils/debugLog'
 
 export class AnimeTosho implements IProvider {
+  constructor() {
+    this.name = 'AnimeTosho'
+  }
+
   // provider specific fetch function to retrieve raw data
   private async fetch(query: string): Promise<IToshoData[]> {
+    debugLog(`${this.name} (cache): tosho_${query}`)
     const cachedData = await app.cache.get(`tosho_${query}`)
-    if (cachedData) return cachedData as IToshoData[]
+    if (cachedData) {
+      debugLog(`${this.name} (cache): Cache hit: tosho_${query}`)
+      return cachedData as IToshoData[]
+    }
+    debugLog(`${this.name} (cache): Cache miss: tosho_${query}`)
 
-    const data = await fetch(
-      `${TOSHO_URL}?t=search&extended=1&limit=100&offset=0&q=${encodeURIComponent(
-        query
-      )}`
-    ).then(res => {
+    const searchURL = `${toshoUrl}?t=search&extended=1&limit=100&offset=0&q=${encodeURIComponent(
+      query
+    )}`
+
+    debugLog(`${this.name}: ${query}`)
+    debugLog(`${this.name}: Fetching data from ${searchURL}`)
+
+    const data = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
 
+    debugLog(`${this.name} (fetch): Fetched data, caching tosho_${query}`)
     await app.cache.set(`tosho_${query}`, data)
 
     return data as IToshoData[]

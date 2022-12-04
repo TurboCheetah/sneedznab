@@ -1,27 +1,51 @@
-import { ANIMEBYTES_URL } from '#/constants'
+import { animebytesUrl } from '#/constants'
 import { IAnimeBytesData } from '#interfaces/animeBytes'
 import { IProvider } from '#interfaces/provider'
 import { ITorrentRelease } from '#interfaces/releases'
 import { ISneedexRelease } from '#interfaces/sneedex'
 import { app } from '#/index'
+import { debugLog } from '#utils/debugLog'
 
 export class AnimeBytes implements IProvider {
-  constructor(private passkey: string, private username: string) {}
+  constructor(private passkey: string, private username: string) {
+    if (!passkey || !username) {
+      throw new Error('No AnimeBytes credentials provided')
+    }
+
+    this.name = 'AnimeBytes'
+    this.passkey = passkey
+    this.username = username
+  }
 
   // provider specific fetch function to retrieve raw data
   private async fetch(query: string): Promise<IAnimeBytesData> {
+    debugLog(`${this.name}: ${query}`)
+    debugLog(`${this.name} (cache): tosho_${query}`)
     const cachedData = await app.cache.get(`animebytes_${query}`)
-    if (cachedData) return cachedData as IAnimeBytesData
+    if (cachedData) {
+      debugLog(`${this.name} (cache): Cache hit: animebytes_${query}`)
+      return cachedData as IAnimeBytesData
+    }
+    debugLog(`${this.name} (cache): Cache miss: animebytes_${query}`)
 
-    const data = await fetch(
-      `${ANIMEBYTES_URL}?torrent_pass=${this.passkey}&username=${
-        this.username
-      }&type=anime&searchstr=${encodeURIComponent(query)}`
-    ).then(res => {
+    const searchURL = `${animebytesUrl}?torrent_pass=${this.passkey}&username=${
+      this.username
+    }&type=anime&searchstr=${encodeURIComponent(query)}`
+
+    debugLog(`${this.name} (fetch): ${query}`)
+    debugLog(
+      `${this.name} (fetch): Fetching data from ${searchURL.replace(
+        new RegExp(`${this.passkey}|${this.username}`, 'gi'),
+        ['REDACTED]']
+      )}`
+    )
+
+    const data = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
 
+    debugLog(`${this.name} (fetch): Fetched data, caching animebytes_${query}`)
     await app.cache.set(`animebytes_${query}`, data)
 
     return data as IAnimeBytesData

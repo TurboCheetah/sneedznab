@@ -12,13 +12,15 @@ export class App {
   constructor(
     public cache: ICache,
     public providers: IProvider[],
-    public routes: IRoute[]
+    public routes: IRoute[],
+    public debug: boolean
   ) {
     this.app = new Hono()
     this.cache = cache
     this.providers = providers
     this.routes = routes
     this.sneedex = new Sneedex(process.env.SNEEDEX_APIKEY)
+    this.debug = debug
 
     this.initializeMiddlewares()
     this.initializeRoutes()
@@ -29,7 +31,7 @@ export class App {
   }
 
   private initializeRoutes() {
-    this.app.get('/', c => c.json({ message: 'OK' }))
+    this.app.get('/', c => c.json({ message: 'ok' }))
     this.routes.forEach(route => {
       this.app.route(route.path, route.getRouter())
     })
