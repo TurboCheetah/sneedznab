@@ -100,15 +100,15 @@ export class ApiRoute implements IRoute {
 
         // Releases are typically just each individual season
         for (const release of sneedexData[0].releases) {
-          const sneedQuery = `${release.best ? release.best : release.alt} ${
-            sneedexData[0].title
-          }`
+          const sneedQuery = {
+            title: sneedexData[0].title,
+            alias: sneedexData[0].alias
+          }
 
           const results = (
             await Promise.all(
               app.providers.map(
-                async provider =>
-                  await provider.get(sneedexData[0].title, release)
+                async provider => await provider.get(sneedQuery, release)
               )
             )
           ).flat()

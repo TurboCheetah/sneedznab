@@ -56,7 +56,7 @@ export class AnimeBytes implements IProvider {
 
   // get function to standardize the returned data to make things easier to work with and plug-and-play
   public async get(
-    anime: string,
+    anime: { title: string; alias: string },
     sneedexData: ISneedexRelease
   ): Promise<ITorrentRelease[]> {
     const bestReleaseLinks = sneedexData.best_links.length
@@ -80,10 +80,15 @@ export class AnimeBytes implements IProvider {
       .map(id => parseInt(id, 10))
 
     // shrimply fetch the data and then map it to the appropriate values
-    const data = await this.fetch(anime)
+    let data = await this.fetch(anime.title)
 
     // if no data was found, return null
-    if (data.Results === '0') return null
+    if (data.Results === '0') {
+      if (!anime.alias.length) return null
+
+      data = await this.fetch(anime.alias)
+      if (data.Results === '0') return null
+    }
 
     // only parse the group where CategoryName === "Anime"
     const animeData = data.Groups.filter(

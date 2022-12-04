@@ -4,7 +4,7 @@ import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 export interface IProvider {
   name: string
   get(
-    anime: string,
+    anime: { title: string; alias: string },
     sneedexData: ISneedexRelease
   ): Promise<ITorrentRelease[] | IUsenetRelease[]>
 }

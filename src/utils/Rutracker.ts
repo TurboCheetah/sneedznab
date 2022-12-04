@@ -42,7 +42,7 @@ export class Rutracker implements IProvider {
 
   // get function to standardize the returned data to make things easier to work with and plug-and-play
   public async get(
-    anime: string,
+    anime: { title: string; alias: string },
     sneedexData: ISneedexRelease
   ): Promise<ITorrentRelease[]> {
     // first check if there even is an rutracker link in sneedexData.best_links and sneedexData.alt_links

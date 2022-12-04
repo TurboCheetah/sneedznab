@@ -44,13 +44,24 @@ export class AnimeTosho implements IProvider {
 
   // get function to standardize the returned data to make things easier to work with and plug-and-play
   public async get(
-    anime: string,
+    anime: { title: string; alias: string },
     sneedexData: ISneedexRelease
   ): Promise<IUsenetRelease[] | ITorrentRelease[]> {
     // shrimply fetch the data and then map it to the appropriate values
-    const data = await this.fetch(
-      `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${anime}`
+    let data = await this.fetch(
+      `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${anime.title}`
     )
+    console.log('sneed', data)
+
+    // if the data is empty, try again with the alias
+    if (!data.length) {
+      if (!anime.alias.length) return null
+      data = await this.fetch(
+        `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
+          anime.alias
+        }`
+      )
+    }
 
     const bestReleaseLinks = sneedexData.best_links.length
       ? sneedexData.best_links.split(' ')
