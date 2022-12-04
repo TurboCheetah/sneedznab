@@ -2,14 +2,12 @@ import { sneedexUrl } from '#/constants'
 import { ISneedexData } from '#interfaces/sneedex'
 import { app } from '#/index'
 import { debugLog } from '#utils/debugLog'
+import { closest } from 'fastest-levenshtein'
 
 export class Sneedex {
   public name: string
-  constructor(private apiKey: string) {
-    if (!apiKey) throw new Error('No Sneedex API key provided')
-
+  constructor() {
     this.name = 'Sneedex'
-    this.apiKey = apiKey
   }
 
   public async fetch(query: string): Promise<ISneedexData[]> {
@@ -22,27 +20,43 @@ export class Sneedex {
     }
     debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
 
-    const searchURL = `${sneedexUrl}/search?key=${
-      this.apiKey
-    }&c=50&q=${encodeURIComponent(query)}`
+    const searchURL = `${sneedexUrl}/public/indexer`
 
-    debugLog(
-      `${this.name} (fetch): Fetching data from ${searchURL.replace(
-        new RegExp(this.apiKey, 'gi'),
-        '[REDACTED]'
-      )}`
-    )
+    debugLog(`${this.name} (fetch): Fetching data from ${searchURL}`)
 
     const sneedexData = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
 
+    // replace any occurances of \n in the title or alias with a space
+    const data = sneedexData.map((release: ISneedexData) => {
+      release.title = release.title.replace(/\\n/gi, ' ').replace(/\n/gi, ' ')
+      release.alias = release.alias.replace(/\\n/gi, ' ').replace(/\n/gi, ' ')
+      return release
+    })
+
+    // find the object whose title or alias matches the query using fastest-levenshtein
+    const closestMatch = closest(query, [
+      ...data.map(release => release.title),
+      ...data.map(release => release.alias).filter(alias => alias)
+    ])
+
+    // find the obhect whose title or alias matches the closest match
+    const closestMatchObject = data.find(
+      release =>
+        release.title === closestMatch ||
+        (release.alias && release.alias === closestMatch)
+    )
+
+    const match = closestMatchObject
+    match.releases = JSON.parse(match.releases)
+
     debugLog(
       `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
     )
-    await app.cache.set(`${this.name}_${query}`, sneedexData as ISneedexData[])
+    await app.cache.set(`${this.name}_${query}`, data as ISneedexData[])
 
-    return sneedexData as ISneedexData[]
+    return match as ISneedexData[]
   }
 }

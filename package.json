@@ -21,6 +21,7 @@
   "homepage": "https://github.com/TurboCheetah/sneedex-indexer#readme",
   "dependencies": {
     "@upstash/redis": "1.15.0",
+    "fastest-levenshtein": "1.0.16",
     "hono": "2.2.5",
     "node-cache": "5.1.2"
   },

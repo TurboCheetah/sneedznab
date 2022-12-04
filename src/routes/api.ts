@@ -75,7 +75,7 @@ export class ApiRoute implements IRoute {
         const torrentReleases: ITorrentRelease[] = []
 
         // Return empty if no results
-        if (!sneedexData[0]) {
+        if (!sneedexData) {
           debugLog(`API (fetch): No results found, caching api_${query}`)
           await app.cache.set(`api_${sonarrQuery}`, {
             usenetReleases,
@@ -99,10 +99,10 @@ export class ApiRoute implements IRoute {
         }
 
         // Releases are typically just each individual season
-        for (const release of sneedexData[0].releases) {
+        for (const release of sneedexData.releases) {
           const sneedQuery = {
-            title: sneedexData[0].title,
-            alias: sneedexData[0].alias
+            title: sneedexData.title,
+            alias: sneedexData.alias
           }
 
           const results = (

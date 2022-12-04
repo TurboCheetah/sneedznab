@@ -19,7 +19,7 @@ export class App {
     this.cache = cache
     this.providers = providers
     this.routes = routes
-    this.sneedex = new Sneedex(process.env.SNEEDEX_APIKEY)
+    this.sneedex = new Sneedex()
     this.debug = debug
 
     this.initializeMiddlewares()

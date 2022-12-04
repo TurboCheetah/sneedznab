@@ -51,7 +51,6 @@ export class AnimeTosho implements IProvider {
     let data = await this.fetch(
       `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${anime.title}`
     )
-    console.log('sneed', data)
 
     // if the data is empty, try again with the alias
     if (!data.length) {
