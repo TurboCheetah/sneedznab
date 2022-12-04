@@ -7,6 +7,7 @@ import { app } from '#/index'
 import { debugLog } from '#utils/debugLog'
 
 export class AnimeBytes implements IProvider {
+  public name: string
   constructor(private passkey: string, private username: string) {
     if (!passkey || !username) {
       throw new Error('No AnimeBytes credentials provided')
@@ -36,7 +37,7 @@ export class AnimeBytes implements IProvider {
     debugLog(
       `${this.name} (fetch): Fetching data from ${searchURL.replace(
         new RegExp(`${this.passkey}|${this.username}`, 'gi'),
-        ['REDACTED]']
+        '[REDACTED]'
       )}`
     )
 
