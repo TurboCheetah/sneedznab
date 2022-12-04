@@ -7,17 +7,18 @@ import { app } from '#/index'
 import { debugLog } from '#utils/debugLog'
 
 export class Rutracker implements IProvider {
+  public name: string
   constructor() {
     this.name = 'ruTracker'
   }
 
   // provider specific fetch function to retrieve raw data
-  private async fetch(query: string): Promise<IToshoData[]> {
+  private async fetch(query: string): Promise<IRutrackerData> {
     debugLog(`${this.name} (cache): ${this.name}_${query}`)
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
       debugLog(`${this.name} (cache): Cache hit: ${this.name}_${query}`)
-      return cachedData as IToshoData[]
+      return cachedData as IRutrackerData
     }
     debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
 
@@ -36,7 +37,7 @@ export class Rutracker implements IProvider {
     )
     await app.cache.set(`${this.name}_${query}`, data)
 
-    return data as IRutrackerData[]
+    return data as IRutrackerData
   }
 
   // get function to standardize the returned data to make things easier to work with and plug-and-play

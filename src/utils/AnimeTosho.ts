@@ -7,6 +7,7 @@ import { app } from '#/index'
 import { debugLog } from '#utils/debugLog'
 
 export class AnimeTosho implements IProvider {
+  public name: string
   constructor() {
     this.name = 'AnimeTosho'
   }

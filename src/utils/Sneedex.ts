@@ -4,6 +4,7 @@ import { app } from '#/index'
 import { debugLog } from '#utils/debugLog'
 
 export class Sneedex {
+  public name: string
   constructor(private apiKey: string) {
     if (!apiKey) throw new Error('No Sneedex API key provided')
 
