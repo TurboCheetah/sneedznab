@@ -23,7 +23,8 @@
     "@upstash/redis": "1.15.0",
     "fastest-levenshtein": "1.0.16",
     "hono": "2.2.5",
-    "node-cache": "5.1.2"
+    "node-cache": "5.1.2",
+    "picocolors": "1.0.0"
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",

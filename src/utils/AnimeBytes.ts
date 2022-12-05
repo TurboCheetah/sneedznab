@@ -20,35 +20,32 @@ export class AnimeBytes implements IProvider {
 
   // provider specific fetch function to retrieve raw data
   private async fetch(query: string): Promise<IAnimeBytesData> {
-    debugLog(`${this.name}: ${query}`)
-    debugLog(`${this.name} (cache): tosho_${query}`)
+    debugLog(this.name, 'cache', `${this.name}_${query}`)
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(`${this.name} (cache): Cache hit: ${this.name}_${query}`)
+      debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
       return cachedData as IAnimeBytesData
     }
-    debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
+    debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
 
     const searchURL = `${animebytesUrl}?torrent_pass=${this.passkey}&username=${
       this.username
     }&type=anime&searchstr=${encodeURIComponent(query)}`
-
-    debugLog(`${this.name} (fetch): ${query}`)
+    debugLog(this.name, 'fetch', query)
     debugLog(
-      `${this.name} (fetch): Fetching data from ${searchURL.replace(
+      this.name,
+      'fetch',
+      `Fetching data from ${searchURL.replace(
         new RegExp(`${this.passkey}|${this.username}`, 'gi'),
         '[REDACTED]'
       )}`
     )
-
     const data = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
 
-    debugLog(
-      `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
-    )
+    debugLog(this.name, 'fetch', `Fetched data, caching ${this.name}_${query}`)
     await app.cache.set(`${this.name}_${query}`, data)
 
     return data as IAnimeBytesData

@@ -15,19 +15,18 @@ export class Sneedex {
   }
 
   public async fetch(query: string): Promise<ISneedexData> {
-    debugLog(`${this.name}: ${query}`)
-    debugLog(`${this.name} (cache): ${query}`)
+    debugLog(this.name, 'cache', `${this.name}_${query}`)
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(`${this.name} (cache): Cache hit: ${this.name}_${query}`)
+      debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
       return cachedData as ISneedexData
     }
-    debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
+    debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
 
     const searchURL = `${sneedexUrl}/public/indexer`
 
-    debugLog(`${this.name} (fetch): Fetching data from ${searchURL}`)
-
+    debugLog(this.name, 'fetch', query)
+    debugLog(this.name, 'fetch', `Fetching data from ${searchURL}`)
     const sneedexData: IRawSneedexData[] = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
@@ -69,11 +68,11 @@ export class Sneedex {
       }
 
       debugLog(
-        `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
+        this.name,
+        'fetch',
+        `Fetched data, caching ${this.name}_${query}`
       )
       await app.cache.set(`${this.name}_${query}`, parsedRelease)
-
-      console.log(parsedRelease)
 
       return parsedRelease as ISneedexData
     }
@@ -90,7 +89,7 @@ export class Sneedex {
 
     // to prevent false positives, only return the closest match if the distance is less than 5
     if (closestMatchDistance > 5) {
-      debugLog(`${this.name} (fetch): No match found for ${query}, caching`)
+      debugLog(this.name, 'fetch', `No match found for ${query}, caching`)
       await app.cache.set(`${this.name}_${query}`, null)
       return null
     }

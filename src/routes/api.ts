@@ -51,11 +51,11 @@ export class ApiRoute implements IRoute {
         const sonarrQuery = query.split(' : ')[0]
 
         // check cache first
-        debugLog(`API (cache): api_${query}`)
+        debugLog('API', 'cache', `api_${query}`)
         const cachedData = await app.cache.get(`api_${sonarrQuery}`)
 
         if (cachedData) {
-          debugLog(`API (cache): Cache hit: api_${query}`)
+          debugLog('API', 'cache', `Cache hit: api_${query}`)
           if (returnType === 'json') return c.json(cachedData)
 
           return c.body(
@@ -66,9 +66,9 @@ export class ApiRoute implements IRoute {
             }
           )
         }
-        debugLog(`API (cache): Cache miss: api_${query}`)
+        debugLog('API', 'cache', `Cache miss: api_${query}`)
 
-        debugLog(`API (fetch): ${sonarrQuery}`)
+        debugLog('API', 'fetch', sonarrQuery)
         const sneedexData = await app.sneedex.fetch(sonarrQuery)
 
         const usenetReleases: IUsenetRelease[] = []
@@ -76,7 +76,7 @@ export class ApiRoute implements IRoute {
 
         // Return empty if no results
         if (!sneedexData) {
-          debugLog(`API (fetch): No results found, caching api_${query}`)
+          debugLog('API', 'fetch', `No results found, caching api_${query}`)
           await app.cache.set(`api_${sonarrQuery}`, {
             usenetReleases,
             torrentReleases
@@ -122,7 +122,7 @@ export class ApiRoute implements IRoute {
           }
         }
 
-        debugLog(`API (fetch): Fetched data, caching api_${sonarrQuery}`)
+        debugLog('API', 'fetch', `Fetched data, caching api_${sonarrQuery}`)
         await app.cache.set(`api_${sonarrQuery}`, {
           usenetReleases,
           torrentReleases
