@@ -8,23 +8,22 @@ ENV UID=1001
 ENV GID=1001
 
 RUN addgroup \
-    --system \
-    --gid "${GID}" \
-    "${GROUP}" \
-    && adduser \
-    --system \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    "${USER}"
+  --system \
+  --gid "${GID}" \
+  "${GROUP}" \
+  && adduser \
+  --system \
+  --disabled-password \
+  --gecos "" \
+  --home "/nonexistent" \
+  --shell "/sbin/nologin" \
+  --no-create-home \
+  --uid "${UID}" \
+  "${USER}"
 
 COPY package.json bun.lockb ./
 
-RUN sed -i 's/"prepare": "husky install"/"prepare": ""/' ./package.json \
-    && bun install
+RUN bun install
 
 COPY . .
 

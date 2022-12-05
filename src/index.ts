@@ -1,18 +1,40 @@
-import { Hono } from 'hono'
-import { logger } from 'hono/logger'
-import apiRoute from '#routes/api'
+import { App } from '#/app'
+import { ApiRoute } from '#routes/api'
+import { AnimeTosho } from '#utils/AnimeTosho'
+import { AnimeBytes } from '#utils/AnimeBytes'
+import { Rutracker } from '#utils/Rutracker'
+import { RedisCache } from '#utils/redis'
+import { Redis } from '@upstash/redis'
+import { SimpleCache } from '#utils/simpleCache'
+import * as NodeCache from 'node-cache'
 
-const app = new Hono()
-
-app.use('*', logger())
-app.onError((err, c) => {
-  console.error(`${err}`)
-  return c.json({ message: err.message }, 500)
-})
-app.get('/', c => c.json({ message: 'OK' }))
-app.route('/api', apiRoute)
+export const app = new App(
+  // If you would like to use Redis instead, comment out the line below and uncomment the Redis part
+  new SimpleCache(
+    new NodeCache({ stdTTL: +process.env.CACHE_TTL, checkperiod: 10 })
+  ),
+  /*
+  new RedisCache(
+    new Redis({
+      url: process.env.REDIS_URL,
+      token: process.env.REDIS_TOKEN
+    })
+  ),
+    */
+  [
+    // AnimeTosho is used instead of scraping Nyaa
+    new AnimeTosho(),
+    // Only enable AnimeBytes if you have an account
+    new AnimeBytes(
+      process.env.ANIMEBYTES_PASSKEY,
+      process.env.ANIMEBYTES_USERNAME
+    ),
+    new Rutracker()
+  ],
+  [new ApiRoute()]
+)
 
 export default {
-  port: 3000,
-  fetch: app.fetch
+  port: process.env.port || 3000,
+  fetch: app.getServer().fetch
 }

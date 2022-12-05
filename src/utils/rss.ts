@@ -1,8 +1,23 @@
-import { TorrentRelease, UsenetRelease } from '#interfaces/releases'
+import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
+
+export const escape = (str: string): string => {
+  // replace ampersands with &amp;
+  // replace < with &lt;
+  // replace > with &gt;
+  // replace " with &quot;
+  // replace ' with &apos;
+
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;')
+}
 
 export const rssBuilder = (
-  usenetReleases: UsenetRelease[],
-  torrentReleases: TorrentRelease[]
+  usenetReleases: IUsenetRelease[],
+  torrentReleases: ITorrentRelease[]
 ): string => {
   // for each release, add an item to the rss feed
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -14,7 +29,7 @@ export const rssBuilder = (
         .map(
           release => `
 				  <item>
-					<title>${release.title}</title>
+					<title>${escape(release.title)}</title>
 					<description />
 					<guid>${release.link}</guid>
 					<comments>${release.link}</comments>
@@ -33,7 +48,7 @@ export const rssBuilder = (
 				<newznab:attr name="traktid" value="0" />
 				<newznab:attr name="doubanid" value="0" />
 				<newznab:attr name="files" value="${release.files}" />
-				<newznab:attr name="grabs" value="69" />
+				<newznab:attr name="grabs" value="${release.grabs}" />
 				</item>`
         )
         .join('')}
@@ -41,7 +56,7 @@ export const rssBuilder = (
         .map(
           release => `
 				  <item>
-					<title>${release.title}</title>
+					<title>${escape(release.title)}</title>
 					<description />
 					<guid>${release.link}</guid>
 					<comments>${release.link}</comments>
@@ -60,9 +75,9 @@ export const rssBuilder = (
 					<torznab:attr name="traktid" value="0" />
 					<torznab:attr name="doubanid" value="0" />
 					<torznab:attr name="files" value="${release.files}" />
-					<torznab:attr name="grabs" value="69" />
+					<torznab:attr name="grabs" value="${release.grabs}" />
 					<torznab:attr name="seeders" value="${release.seeders}" />
-					<torznab:attr name="peers" value="${release.peers}" />
+					<torznab:attr name="peers" value="${release.seeders + release.leechers}" />
 					<torznab:attr name="infohash" value="${release.infohash}" />
 				  </item>`
         )
