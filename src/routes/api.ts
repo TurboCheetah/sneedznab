@@ -42,9 +42,10 @@ export class ApiRoute implements IRoute {
         )
       } else if (c.req.query('t') === 'search') {
         const returnType = c.req.query('response')
-        let query = c.req.query('q').trim()
+        let query = c.req.query('q')
         // if query is unspecified, e.g when Prowlarr is testing it, set it to DxD to test it
         if (!query) query = 'High School DxD'
+        query = query.trim()
 
         // Sonarr requests in the format Attack on Titan : S04E28 (87)
         // TODO: somehow make this work for titles like RE:Zero since it has a colon in it
