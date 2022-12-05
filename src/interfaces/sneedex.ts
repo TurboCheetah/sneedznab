@@ -1,10 +1,14 @@
-export interface ISneedexData {
-  confidence: number
+export interface IRawSneedexData {
   uuid: string
   title: string
   alias: string
-  notes: string
-  comparisons: string
+  releases: string
+}
+
+export interface ISneedexData {
+  uuid: string
+  title: string
+  alias: string
   releases: ISneedexRelease[]
 }
 

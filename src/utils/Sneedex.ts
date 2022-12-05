@@ -1,5 +1,9 @@
 import { sneedexUrl } from '#/constants'
-import { ISneedexData } from '#interfaces/sneedex'
+import {
+  IRawSneedexData,
+  ISneedexData,
+  ISneedexRelease
+} from '#interfaces/sneedex'
 import { app } from '#/index'
 import { debugLog } from '#utils/debugLog'
 import { closest, distance } from 'fastest-levenshtein'
@@ -16,7 +20,7 @@ export class Sneedex {
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
       debugLog(`${this.name} (cache): Cache hit: ${this.name}_${query}`)
-      return cachedData as ISneedexData[]
+      return cachedData as ISneedexData
     }
     debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
 
@@ -24,48 +28,62 @@ export class Sneedex {
 
     debugLog(`${this.name} (fetch): Fetching data from ${searchURL}`)
 
-    const sneedexData = await fetch(searchURL).then(res => {
+    const sneedexData: IRawSneedexData[] = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
 
     // replace any occurances of \n in the title or alias with a space
-    const data = sneedexData.map((release: ISneedexData) => {
-      release.title = release.title.replace(/\\n/gi, ' ').replace(/\n/gi, ' ')
-      release.alias = release.alias.replace(/\\n/gi, ' ').replace(/\n/gi, ' ')
-      return release
-    })
+    // also gotta remember to parse the stringified releases
+    // also gotta strip out any weird stuff that isn't in the official title
+    // e.g Baki (2018) --> Baki
+    const rawReleasesWithFormattedStrings = sneedexData.map(
+      (release: IRawSneedexData) => {
+        release.title = release.title
+          .replace(/\\n/gi, ' ')
+          .replace(/\n/gi, ' ')
+          .replace(/ \(\d{4}\)/gi, '')
+        release.alias = release.alias
+          .replace(/\\n/gi, ' ')
+          .replace(/\n/gi, ' ')
+          .replace(/ \(\d{4}\)/gi, '')
+        return release
+      }
+    )
+
     // find a release tile that contains the query
-    const release = data.find(release => {
+    const matchedRelease = rawReleasesWithFormattedStrings.find(release => {
       const title = release.title.toLowerCase()
       const alias = release.alias.toLowerCase()
       return title === query.toLowerCase() || alias === query.toLowerCase()
     })
 
-    // if we found a release, return it
+    // if we found a release, parse it and return it
     // otherwise, find the closest match
-    // also gotta remember to parse the stringified releases
-    // also gotta strip out any weird stuff that isn't in the official title
-    // e.g Baki (2018) --> Baki
-    if (release) {
-      release.title = release.title
-        .replace(/\\n/gi, ' ')
-        .replace(/\n/gi, ' ')
-        .replace(/ \(\d{4}\)/gi, '')
-      release.releases = JSON.parse(release.releases)
+    if (matchedRelease) {
+      const parsedRelease: ISneedexData = {
+        uuid: matchedRelease.uuid,
+        title: matchedRelease.title,
+        alias: matchedRelease.alias,
+        releases: JSON.parse(matchedRelease.releases)
+      }
 
       debugLog(
         `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
       )
-      await app.cache.set(`${this.name}_${query}`, data as ISneedexData[])
+      await app.cache.set(`${this.name}_${query}`, parsedRelease)
 
-      return release as ISneedexData
+      console.log(parsedRelease)
+
+      return parsedRelease as ISneedexData
     }
 
     // find the object whose title or alias matches the query using fastest-levenshtein
     const closestMatch = closest(query, [
-      ...data.map(release => release.title),
-      ...data.map(release => release.alias).filter(alias => alias)
+      ...rawReleasesWithFormattedStrings.map(release => release.title),
+      ...rawReleasesWithFormattedStrings
+        .map(release => release.alias)
+        .filter(alias => alias)
     ])
     // get the distance between the query and the closest match
     const closestMatchDistance = distance(query, closestMatch)
@@ -78,20 +96,48 @@ export class Sneedex {
     }
 
     // find the object whose title or alias matches the closest match
-    const closestMatchObject = data.find(
+    const closestMatchObject = rawReleasesWithFormattedStrings.find(
       release =>
         release.title === closestMatch ||
         (release.alias && release.alias === closestMatch)
     )
 
     const match = closestMatchObject
-    match.releases = JSON.parse(match.releases)
+
+    const actualRelease: ISneedexData = {
+      uuid: match.uuid,
+      title: match.title,
+      alias: match.alias,
+      releases: JSON.parse(match.releases).map((release: ISneedexRelease) => {
+        return {
+          uuid: release.uuid,
+          type: release.type,
+          best: release.best,
+          alt: release.alt,
+
+          best_links: release.best_links,
+          alt_links: release.alt_links,
+
+          best_dual: release.best_dual,
+          alt_dual: release.alt_dual,
+
+          best_incomplete: release.best_incomplete,
+          alt_incomplete: release.alt_incomplete,
+
+          best_unmuxed: release.best_unmuxed,
+          alt_unmuxed: release.alt_unmuxed,
+
+          best_bad_encode: release.best_bad_encode,
+          alt_bad_encode: release.alt_bad_encode
+        }
+      })
+    }
 
     debugLog(
       `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
     )
-    await app.cache.set(`${this.name}_${query}`, data as ISneedexData)
+    await app.cache.set(`${this.name}_${query}`, actualRelease as ISneedexData)
 
-    return match as ISneedexData
+    return actualRelease as ISneedexData
   }
 }
