@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   sneedznab:
-    image: ghcr.io/turbocheetah/sneedznab:v1.1
+    image: ghcr.io/turbocheetah/sneedznab:master
     container_name: sneedznab
     env_file:
       - .env
