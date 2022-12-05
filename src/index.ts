@@ -32,7 +32,7 @@ export const app = new App(
     new Rutracker()
   ],
   [new ApiRoute()],
-  process.env.NODE_ENV === 'development'
+  process.env.DEBUG
 )
 
 export default {
