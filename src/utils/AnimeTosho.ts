@@ -5,6 +5,7 @@ import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 import { ISneedexRelease } from '#interfaces/sneedex'
 import { app } from '#/index'
 import { debugLog } from '#utils/debugLog'
+import { formatDate } from '#utils/formatDate'
 
 export class AnimeTosho implements IProvider {
   public name: string
@@ -71,18 +72,18 @@ export class AnimeTosho implements IProvider {
 
         return [
           {
-            name: `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
+            title: `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
               anime.title
             }`,
             link: `https://nyaa.si/download/${nyaaID}.torrent`,
             url: `https://nyaa.si/view/${nyaaID}`,
-            seeders: null,
-            leechers: null,
-            infohash: null,
-            size: null,
-            files: null,
-            timestamp: null,
-            grabs: null,
+            seeders: 0,
+            leechers: 0,
+            infohash: '',
+            size: 0,
+            files: 0,
+            timestamp: formatDate(new Date()),
+            grabs: 0,
             type: 'torrent'
           }
         ]
@@ -105,17 +106,7 @@ export class AnimeTosho implements IProvider {
     if (!matchedRelease) return null
 
     // convert matchedRelease.timestamp to the format YYYY-MM-DD HH:MM:SS
-    const date = new Date(matchedRelease.timestamp * 1000)
-    const year = date.getFullYear()
-    const month = `0${date.getMonth() + 1}`.slice(-2)
-    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
-    const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
-    const minutes =
-      date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
-    const seconds =
-      date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
-
-    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+    const formattedDate = formatDate(matchedRelease.timestamp * 1000)
 
     // return both the torrent and usenet release
     const releases = []
