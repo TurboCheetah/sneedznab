@@ -52,16 +52,6 @@ export class AnimeTosho implements IProvider {
       `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${anime.title}`
     )
 
-    // if the data is empty, try again with the alias
-    if (!data.length) {
-      if (!anime.alias.length) return null
-      data = await this.fetch(
-        `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
-          anime.alias
-        }`
-      )
-    }
-
     const bestReleaseLinks = sneedexData.best_links.length
       ? sneedexData.best_links.split(' ')
       : sneedexData.alt_links.split(' ')
@@ -72,6 +62,37 @@ export class AnimeTosho implements IProvider {
     )
     const nyaaID = nyaaLink ? nyaaLink.match(/nyaa.si\/view\/(\d+)/)[1] : null
 
+    // if the data is empty, try again with the alias
+    if (!data.length) {
+      if (!anime.alias.length) {
+        // if there was a nyaa link, return a very basic entry as there is no way to get the missing data
+        // TODO: Find a better way of getting stuff directly from Nyaa
+        if (!nyaaID) return null
+
+        return [
+          {
+            name: `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
+              anime.title
+            }`,
+            link: `https://nyaa.si/download/${nyaaID}.torrent`,
+            url: `https://nyaa.si/view/${nyaaID}`,
+            seeders: null,
+            leechers: null,
+            infohash: null,
+            size: null,
+            files: null,
+            timestamp: null,
+            grabs: null,
+            type: 'torrent'
+          }
+        ]
+      }
+      data = await this.fetch(
+        `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
+          anime.alias
+        }`
+      )
+    }
     const matchedRelease = data.find((data: IToshoData) =>
       nyaaID
         ? data.nyaa_id === +nyaaID
@@ -96,37 +117,36 @@ export class AnimeTosho implements IProvider {
 
     const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 
-    // if the release is on usenet, return it as a usenet release
-    if (matchedRelease.nzb_url) {
-      return [
-        {
-          title: matchedRelease.title,
-          link: matchedRelease.link,
-          url: matchedRelease.nzb_url,
-          size: matchedRelease.total_size,
-          files: matchedRelease.num_files,
-          timestamp: formattedDate,
-          grabs: null,
-          type: 'usenet'
-        }
-      ] as IUsenetRelease[]
-    }
+    // return both the torrent and usenet release
+    const releases = []
 
-    // if the release is a torrent, return it as a torrent release
-    return [
-      {
+    if (matchedRelease.nzb_url) {
+      releases.push({
         title: matchedRelease.title,
         link: matchedRelease.link,
-        url: matchedRelease.torrent_url,
-        seeders: matchedRelease.seeders,
-        leechers: matchedRelease.leechers,
-        infohash: matchedRelease.info_hash,
+        url: matchedRelease.nzb_url,
         size: matchedRelease.total_size,
         files: matchedRelease.num_files,
         timestamp: formattedDate,
         grabs: null,
-        type: 'torrent'
-      }
-    ] as ITorrentRelease[]
+        type: 'usenet'
+      })
+    }
+
+    releases.push({
+      title: matchedRelease.title,
+      link: matchedRelease.link,
+      url: matchedRelease.torrent_url,
+      seeders: matchedRelease.seeders,
+      leechers: matchedRelease.leechers,
+      infohash: matchedRelease.info_hash,
+      size: matchedRelease.total_size,
+      files: matchedRelease.num_files,
+      timestamp: formattedDate,
+      grabs: null,
+      type: 'torrent'
+    })
+
+    return releases
   }
 }

@@ -113,9 +113,9 @@ export class AnimeBytes implements IProvider {
 
         // format the title to TVDB format
         return {
-          title: `${anime}${sneedexData.type ? ` ${sneedexData.type}` : ''} [${
-            props[3]
-          } ${props[0]} ${props[2]} ${props[4]}${
+          title: `${anime.title}${
+            sneedexData.type ? ` ${sneedexData.type}` : ''
+          } [${props[3]} ${props[0]} ${props[2]} ${props[4]}${
             dualAudio ? ' Dual Audio' : ''
           }]-${releaseGroup}`,
           link: torrent.Link,

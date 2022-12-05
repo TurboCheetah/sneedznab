@@ -42,7 +42,7 @@ export class ApiRoute implements IRoute {
         )
       } else if (c.req.query('t') === 'search') {
         const returnType = c.req.query('response')
-        let query = c.req.query('q')
+        let query = c.req.query('q').trim()
         // if query is unspecified, e.g when Prowlarr is testing it, set it to DxD to test it
         if (!query) query = 'High School DxD'
 

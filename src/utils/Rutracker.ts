@@ -22,6 +22,10 @@ export class Rutracker implements IProvider {
     }
     debugLog(`${this.name} (cache): Cache miss: ${this.name}_${query}`)
 
+    /* for some reason unknown to me turning query, which is just the ID into a number fixes an issue with the way that bun's fetch parses URLs.
+    It works fine if I hardcode the ID in there but breaks if I throw the same exactly string in as a variable, query
+    Then, typecasting it to be a number fixes it somehow!?!? Sir!?!?! */
+    query = +query
     const searchURL = `${rutrackerUrl}/get_tor_topic_data?by=topic_id&val=${query}`
 
     debugLog(`${this.name} (fetch): ${query}`)
@@ -61,6 +65,9 @@ export class Rutracker implements IProvider {
 
     // call the ruTracker API
     const data = await this.fetch(threadID)
+
+    // Handle no results
+    if (!data || data.result[threadID] === null) return null
 
     return [
       {
