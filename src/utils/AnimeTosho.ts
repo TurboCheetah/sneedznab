@@ -46,6 +46,10 @@ export class AnimeTosho implements IProvider {
     anime: { title: string; alias: string },
     sneedexData: ISneedexRelease
   ): Promise<IUsenetRelease[] | ITorrentRelease[]> {
+    // strip out (WEB) from the best and alt titles
+    sneedexData.best = sneedexData.best.replace(/ \(WEB\)/gi, '')
+    sneedexData.alt = sneedexData.alt.replace(/ \(WEB\)/gi, '')
+
     // shrimply fetch the data and then map it to the appropriate values
     let data = await this.fetch(
       `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${anime.title}`
