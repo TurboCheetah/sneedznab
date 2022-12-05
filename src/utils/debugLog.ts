@@ -6,7 +6,7 @@ export const debugLog = (
   context: string,
   message: string
 ): void => {
-  if (!app.debug) return
+  if (!process.env.DEBUG) return
 
   console.log(`>> ${magenta(name)} (${cyan(context)}): ${message}`)
 }

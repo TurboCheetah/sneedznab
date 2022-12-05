@@ -31,8 +31,7 @@ export const app = new App(
     ),
     new Rutracker()
   ],
-  [new ApiRoute()],
-  !!process.env.DEBUG
+  [new ApiRoute()]
 )
 
 export default {

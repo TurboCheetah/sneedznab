@@ -12,15 +12,13 @@ export class App {
   constructor(
     public cache: ICache,
     public providers: IProvider[],
-    public routes: IRoute[],
-    public debug: boolean
+    public routes: IRoute[]
   ) {
     this.app = new Hono()
     this.cache = cache
     this.providers = providers
     this.routes = routes
     this.sneedex = new Sneedex()
-    this.debug = debug
 
     this.initializeMiddlewares()
     this.initializeRoutes()
