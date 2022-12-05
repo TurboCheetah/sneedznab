@@ -5,7 +5,6 @@
 **Keys to collect**
 *note there is no API key for the indexer itself, as this project is intended to run on an internal Docker network, without ports being expoesd to the internet*
 
-- [Sneedex](https://sneedex.moe/options) - for Sneedex searches
 - [AnimeBytes](https://animebytes.tv/user.php?action=edit) - for AnimeBytes results // only required if you are using AnimeBytes
 - If you are using Redis as your cache, you can retrieve the `REDIS_URL` and `REDIS_TOKEN` keys from [Upstash](https://console.upstash.com)
 
