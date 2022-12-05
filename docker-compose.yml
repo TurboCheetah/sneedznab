@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  sneedex-indexer:
-    image: ghcr.io/turbocheetah/sneedex-indexer:v1.1
-    container_name: sneedex-indexer
+  sneedznab:
+    image: ghcr.io/turbocheetah/sneedznab:v1.1
+    container_name: sneedznab
     env_file:
       - .env
     ports:
