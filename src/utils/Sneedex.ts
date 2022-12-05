@@ -31,6 +31,12 @@ export class Sneedex {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
+    debugLog(
+      this.name,
+      'fetch',
+      `Fetched raw data, caching ${this.name}_${query}`
+    )
+    await app.cache.set(`${this.name}_${query}`, sneedexData)
 
     // replace any occurances of \n in the title or alias with a space
     // also gotta remember to parse the stringified releases
@@ -69,8 +75,8 @@ export class Sneedex {
 
       debugLog(
         this.name,
-        'fetch',
-        `Fetched data, caching ${this.name}_${query}`
+        'parser',
+        `parsed data, caching ${this.name}_${query}`
       )
       await app.cache.set(`${this.name}_${query}`, parsedRelease)
 
@@ -89,7 +95,7 @@ export class Sneedex {
 
     // to prevent false positives, only return the closest match if the distance is less than 5
     if (closestMatchDistance > 5) {
-      debugLog(this.name, 'fetch', `No match found for ${query}, caching`)
+      debugLog(this.name, 'parser', `No match found for ${query}, caching`)
       await app.cache.set(`${this.name}_${query}`, null)
       return null
     }
@@ -132,9 +138,7 @@ export class Sneedex {
       })
     }
 
-    debugLog(
-      `${this.name} (fetch): Fetched data, caching ${this.name}_${query}`
-    )
+    debugLog(this.name, 'parser', `Parsed data, caching ${this.name}_${query}`)
     await app.cache.set(`${this.name}_${query}`, actualRelease as ISneedexData)
 
     return actualRelease as ISneedexData
