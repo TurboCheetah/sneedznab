@@ -1,4 +1,4 @@
-# Sneedex-Indexer
+# Sneedznab
 
 ## Running with Docker
 
@@ -11,8 +11,8 @@
 Clone the repository or fetch it however you want:
 
 ```sh
-git clone https://github.com/TurboCheetah/sneedex-indexer.git
-cd sneedex-indexer
+git clone https://github.com/TurboCheetah/sneedznab.git
+cd sneedznab
 ```
 
 Copy `.env.example` to `.env` and put the appropriate API keys in there.
