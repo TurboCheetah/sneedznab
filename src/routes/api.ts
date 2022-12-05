@@ -43,8 +43,9 @@ export class ApiRoute implements IRoute {
       } else if (c.req.query('t') === 'search') {
         const returnType = c.req.query('response')
         let query = c.req.query('q')
-        // if query is unspecified, e.g when Prowlarr is testing it, set it to DxD to test it
-        if (!query) query = 'High School DxD'
+        // if query is unspecified, e.g when Prowlarr is testing it, set it to Akira to test it
+        // Akira because it's also on usenet
+        if (!query) query = 'Akira'
         query = query.trim()
 
         // Sonarr requests in the format Attack on Titan : S04E28 (87)
