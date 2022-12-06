@@ -2,11 +2,16 @@ import { ICache } from '#interfaces/cache'
 import { Redis } from '@upstash/redis'
 
 export class RedisCache implements ICache {
-  constructor(private redis: Redis) {}
+  private redis: Redis
+  constructor(private url: string, private token: string, private ttl: number) {
+    this.redis = new Redis({
+      url,
+      token
+    })
+  }
 
   public async set(key: string, value: any): Promise<void> {
-    // Convert CACHE_TTL to a number so tsc doesn't complain
-    await this.redis.set(key, value, { ex: +process.env.CACHE_TTL })
+    await this.redis.set(key, value, { ex: this.ttl })
     return
   }
 

@@ -4,23 +4,17 @@ import { AnimeTosho } from '#providers/AnimeTosho'
 import { AnimeBytes } from '#providers/AnimeBytes'
 import { Rutracker } from '#providers/Rutracker'
 import { RedisCache } from '#utils/Redis'
-import { Redis } from '@upstash/redis'
 import { SimpleCache } from '#utils/SimpleCache'
-import * as NodeCache from 'node-cache'
 
 export const app = new App(
-  // If you would like to use Redis instead, comment out the line below and uncomment the Redis part
-  new SimpleCache(
-    new NodeCache({ stdTTL: +process.env.CACHE_TTL, checkperiod: 10 })
-  ),
+  new SimpleCache(+process.env.CACHE_TTL),
+  // If you would like to use Redis instead, comment out the line above and uncomment the line below
   /*
-  new RedisCache(
-    new Redis({
-      url: process.env.REDIS_URL,
-      token: process.env.REDIS_TOKEN
-    })
-  ),
-    */
+    new RedisCache(
+    process.env.REDIS_URL,
+    process.env.REDIS_TOKEN,
+    +process.env.CACHE_TTL
+  ), */
   [
     // AnimeTosho is used instead of scraping Nyaa
     new AnimeTosho(),

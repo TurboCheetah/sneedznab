@@ -2,7 +2,13 @@ import { ICache } from '#interfaces/cache'
 import * as NodeCache from 'node-cache'
 
 export class SimpleCache implements ICache {
-  constructor(private cache: NodeCache) {}
+  private cache: NodeCache
+  constructor(private ttl: number) {
+    this.cache = new NodeCache({
+      stdTTL: ttl,
+      checkperiod: 10
+    })
+  }
 
   public async set(key: string, value: any): Promise<void> {
     this.cache.set(key, value)
