@@ -6,7 +6,7 @@ import {
 } from '#interfaces/sneedex'
 import { app } from '#/index'
 import { Utils } from '#utils/Utils'
-import { closest, distance } from 'fastest-levenshtein'
+import Fuse from 'fuse.js'
 
 export class Sneedex {
   readonly name: string
@@ -15,6 +15,7 @@ export class Sneedex {
   }
 
   public async fetch(query: string): Promise<ISneedexData> {
+    // check the cache to see if a match has already been found
     Utils.debugLog(this.name, 'cache', `${this.name}_${query}`)
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
@@ -39,116 +40,46 @@ export class Sneedex {
     await app.cache.set(`${this.name}_${query}`, sneedexData)
 
     // replace any occurances of \n in the title or alias with a space
-    // also gotta remember to parse the stringified releases
-    // also gotta strip out any weird stuff that isn't in the official title
-    // e.g Baki (2018) --> Baki
     const rawReleasesWithFormattedStrings = sneedexData.map(
       (release: IRawSneedexData) => {
-        release.title = release.title
-          .replace(/\\n/gi, ' ')
-          .replace(/\n/gi, ' ')
-          .replace(/ \(\d{4}\)/gi, '')
-        release.alias = release.alias
-          .replace(/\\n/gi, ' ')
-          .replace(/\n/gi, ' ')
-          .replace(/ \(\d{4}\)/gi, '')
+        release.title = release.title.replace(/\\n/gi, ' ').replace(/\n/gi, ' ')
+        release.alias = release.alias.replace(/\\n/gi, ' ').replace(/\n/gi, ' ')
         return release
       }
     )
 
-    // find a release tile that contains the query
-    const matchedRelease = rawReleasesWithFormattedStrings.find(release => {
-      const title = release.title.toLowerCase()
-      const alias = release.alias.toLowerCase()
-      return title === query.toLowerCase() || alias === query.toLowerCase()
+    // initialize fuse.js for fuzzy searching, prioritizing title over alias
+    const fuse = new Fuse(rawReleasesWithFormattedStrings, {
+      keys: [
+        { name: 'title', weight: 0.7 },
+        { name: 'alias', weight: 0.3 }
+      ]
     })
 
-    // if we found a release, parse it and return it
-    // otherwise, find the closest match
-    if (matchedRelease) {
-      const parsedRelease: ISneedexData = {
-        uuid: matchedRelease.uuid,
-        title: matchedRelease.title,
-        alias: matchedRelease.alias,
-        releases: JSON.parse(matchedRelease.releases)
-      }
+    Utils.debugLog(this.name, 'fuse', `Fuzzy finding ${query}`)
+    const [matchedRelease] = fuse.search(query)
 
-      Utils.debugLog(
-        this.name,
-        'parser',
-        `parsed data, caching ${this.name}_${query}`
-      )
-      await app.cache.set(`${this.name}_${query}`, parsedRelease)
-
-      return parsedRelease as ISneedexData
-    }
-
-    // find the object whose title or alias matches the query using fastest-levenshtein
-    const closestMatch = closest(query, [
-      ...rawReleasesWithFormattedStrings.map(release => release.title),
-      ...rawReleasesWithFormattedStrings
-        .map(release => release.alias)
-        .filter(alias => alias)
-    ])
-    // get the distance between the query and the closest match
-    const closestMatchDistance = distance(query, closestMatch)
-
-    // to prevent false positives, only return the closest match if the distance is less than 5
-    if (closestMatchDistance > 5) {
-      Utils.debugLog(
-        this.name,
-        'parser',
-        `No match found for ${query}, caching`
-      )
+    if (!matchedRelease) {
+      Utils.debugLog(this.name, 'fuse', `No match found for ${query}, caching`)
       await app.cache.set(`${this.name}_${query}`, null)
       return null
     }
 
-    // find the object whose title or alias matches the closest match
-    const closestMatchObject = rawReleasesWithFormattedStrings.find(
-      release =>
-        release.title === closestMatch ||
-        (release.alias && release.alias === closestMatch)
-    )
-
-    const match = closestMatchObject
-
-    const actualRelease: ISneedexData = {
-      uuid: match.uuid,
-      title: match.title,
-      alias: match.alias,
-      releases: JSON.parse(match.releases).map((release: ISneedexRelease) => {
-        return {
-          uuid: release.uuid,
-          type: release.type,
-          best: release.best,
-          alt: release.alt,
-
-          best_links: release.best_links,
-          alt_links: release.alt_links,
-
-          best_dual: release.best_dual,
-          alt_dual: release.alt_dual,
-
-          best_incomplete: release.best_incomplete,
-          alt_incomplete: release.alt_incomplete,
-
-          best_unmuxed: release.best_unmuxed,
-          alt_unmuxed: release.alt_unmuxed,
-
-          best_bad_encode: release.best_bad_encode,
-          alt_bad_encode: release.alt_bad_encode
-        }
-      })
+    // if a match if found, parse it and cache it
+    const parsedRelease: ISneedexData = {
+      uuid: matchedRelease.item.uuid,
+      title: matchedRelease.item.title,
+      alias: matchedRelease.item.alias,
+      releases: JSON.parse(matchedRelease.item.releases)
     }
 
     Utils.debugLog(
       this.name,
       'parser',
-      `Parsed data, caching ${this.name}_${query}`
+      `parsed data, caching ${this.name}_${query}`
     )
-    await app.cache.set(`${this.name}_${query}`, actualRelease as ISneedexData)
+    await app.cache.set(`${this.name}_${query}`, parsedRelease)
 
-    return actualRelease as ISneedexData
+    return parsedRelease
   }
 }
