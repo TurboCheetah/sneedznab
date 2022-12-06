@@ -24,20 +24,29 @@ export class Sneedex {
     }
     Utils.debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
 
-    const searchURL = `${sneedexUrl}/public/indexer`
+    // check the cache for the raw response from sneedex.moe
+    let sneedexData: IRawSneedexData[]
+    const sneedexCache = await app.cache.get(`${this.name}`)
 
-    Utils.debugLog(this.name, 'fetch', query)
-    Utils.debugLog(this.name, 'fetch', `Fetching data from ${searchURL}`)
-    const sneedexData: IRawSneedexData[] = await fetch(searchURL).then(res => {
-      if (!res.ok) throw new Error(res.statusText)
-      return res.json()
-    })
-    Utils.debugLog(
-      this.name,
-      'fetch',
-      `Fetched raw data, caching ${this.name}_${query}`
-    )
-    await app.cache.set(`${this.name}_${query}`, sneedexData)
+    if (sneedexCache) {
+      Utils.debugLog(this.name, 'cache', `Cache hit: ${this.name}`)
+      sneedexData = sneedexCache as IRawSneedexData[]
+    } else {
+      // if the cache is empty, fetch the data from sneedex.moe
+      Utils.debugLog(this.name, 'cache', `Cache miss: ${this.name}`)
+      const searchURL = `${sneedexUrl}/public/indexer`
+      Utils.debugLog(this.name, 'fetch', `Fetching data from ${searchURL}`)
+      sneedexData = await fetch(searchURL).then(res => {
+        if (!res.ok) throw new Error(res.statusText)
+        return res.json()
+      })
+      Utils.debugLog(
+        this.name,
+        'fetch',
+        `Fetched raw data, caching ${this.name}`
+      )
+      await app.cache.set(`${this.name}`, sneedexData)
+    }
 
     // replace any occurances of \n in the title or alias with a space
     const rawReleasesWithFormattedStrings = sneedexData.map(
