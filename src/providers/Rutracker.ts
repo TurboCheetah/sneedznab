@@ -4,23 +4,23 @@ import { IProvider } from '#interfaces/provider'
 import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 import { ISneedexRelease } from '#interfaces/sneedex'
 import { app } from '#/index'
-import { debugLog } from '#utils/debugLog'
+import { Utils } from '#utils/Utils'
 
 export class Rutracker implements IProvider {
-  public name: string
+  readonly name: string
   constructor() {
     this.name = 'ruTracker'
   }
 
   // provider specific fetch function to retrieve raw data
   private async fetch(query: string): Promise<IRutrackerData> {
-    debugLog(this.name, 'cache', `${this.name}_${query}`)
+    Utils.debugLog(this.name, 'cache', `${this.name}_${query}`)
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
+      Utils.debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
       return cachedData as IRutrackerData
     }
-    debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
+    Utils.debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
 
     /* for some reason unknown to me turning query, which is just the ID into a number fixes an issue with the way that bun's fetch parses URLs.
     It works fine if I hardcode the ID in there but breaks if I throw the same exactly string in as a variable, query
@@ -28,13 +28,17 @@ export class Rutracker implements IProvider {
     const weirdFix = +query
     const searchURL = `${rutrackerUrl}/get_tor_topic_data?by=topic_id&val=${weirdFix}`
 
-    debugLog(this.name, 'fetch', query)
-    debugLog(this.name, 'fetch', `Fetching data from ${searchURL}`)
+    Utils.debugLog(this.name, 'fetch', query)
+    Utils.debugLog(this.name, 'fetch', `Fetching data from ${searchURL}`)
     const data = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
-    debugLog(this.name, 'fetch', `Fetched data, caching ${this.name}_${query}`)
+    Utils.debugLog(
+      this.name,
+      'fetch',
+      `Fetched data, caching ${this.name}_${query}`
+    )
     await app.cache.set(`${this.name}_${query}`, data)
 
     return data as IRutrackerData

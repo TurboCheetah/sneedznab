@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
 import { IRoute } from '#interfaces/route'
 import { app } from '#/index'
-import { debugLog } from '#utils/debugLog'
+import { Utils } from '#utils/Utils'
 import { rssBuilder } from '#/utils/rss'
 
 export const apiHono = new Hono()
@@ -53,11 +53,11 @@ export class ApiRoute implements IRoute {
         const sonarrQuery = query.split(' : ')[0].replace(/ \(\d{4}\)/gi, '')
 
         // check cache first
-        debugLog('API', 'cache', `api_${query}`)
+        Utils.debugLog('API', 'cache', `api_${query}`)
         const cachedData = await app.cache.get(`api_${sonarrQuery}`)
 
         if (cachedData) {
-          debugLog('API', 'cache', `Cache hit: api_${query}`)
+          Utils.debugLog('API', 'cache', `Cache hit: api_${query}`)
           if (returnType === 'json') return c.json(cachedData)
 
           return c.body(
@@ -68,9 +68,9 @@ export class ApiRoute implements IRoute {
             }
           )
         }
-        debugLog('API', 'cache', `Cache miss: api_${query}`)
+        Utils.debugLog('API', 'cache', `Cache miss: api_${query}`)
 
-        debugLog('API', 'fetch', sonarrQuery)
+        Utils.debugLog('API', 'fetch', sonarrQuery)
         const sneedexData = await app.sneedex.fetch(sonarrQuery)
 
         const usenetReleases: IUsenetRelease[] = []
@@ -78,7 +78,11 @@ export class ApiRoute implements IRoute {
 
         // Return empty if no results
         if (!sneedexData) {
-          debugLog('API', 'fetch', `No results found, caching api_${query}`)
+          Utils.debugLog(
+            'API',
+            'fetch',
+            `No results found, caching api_${query}`
+          )
           await app.cache.set(`api_${sonarrQuery}`, {
             usenetReleases,
             torrentReleases
@@ -124,7 +128,11 @@ export class ApiRoute implements IRoute {
           }
         }
 
-        debugLog('API', 'fetch', `Fetched data, caching api_${sonarrQuery}`)
+        Utils.debugLog(
+          'API',
+          'fetch',
+          `Fetched data, caching api_${sonarrQuery}`
+        )
         await app.cache.set(`api_${sonarrQuery}`, {
           usenetReleases,
           torrentReleases

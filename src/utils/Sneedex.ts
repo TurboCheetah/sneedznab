@@ -5,33 +5,33 @@ import {
   ISneedexRelease
 } from '#interfaces/sneedex'
 import { app } from '#/index'
-import { debugLog } from '#utils/debugLog'
+import { Utils } from '#utils/Utils'
 import { closest, distance } from 'fastest-levenshtein'
 
 export class Sneedex {
-  public name: string
+  readonly name: string
   constructor() {
     this.name = 'Sneedex'
   }
 
   public async fetch(query: string): Promise<ISneedexData> {
-    debugLog(this.name, 'cache', `${this.name}_${query}`)
+    Utils.debugLog(this.name, 'cache', `${this.name}_${query}`)
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
+      Utils.debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
       return cachedData as ISneedexData
     }
-    debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
+    Utils.debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
 
     const searchURL = `${sneedexUrl}/public/indexer`
 
-    debugLog(this.name, 'fetch', query)
-    debugLog(this.name, 'fetch', `Fetching data from ${searchURL}`)
+    Utils.debugLog(this.name, 'fetch', query)
+    Utils.debugLog(this.name, 'fetch', `Fetching data from ${searchURL}`)
     const sneedexData: IRawSneedexData[] = await fetch(searchURL).then(res => {
       if (!res.ok) throw new Error(res.statusText)
       return res.json()
     })
-    debugLog(
+    Utils.debugLog(
       this.name,
       'fetch',
       `Fetched raw data, caching ${this.name}_${query}`
@@ -73,7 +73,7 @@ export class Sneedex {
         releases: JSON.parse(matchedRelease.releases)
       }
 
-      debugLog(
+      Utils.debugLog(
         this.name,
         'parser',
         `parsed data, caching ${this.name}_${query}`
@@ -95,7 +95,11 @@ export class Sneedex {
 
     // to prevent false positives, only return the closest match if the distance is less than 5
     if (closestMatchDistance > 5) {
-      debugLog(this.name, 'parser', `No match found for ${query}, caching`)
+      Utils.debugLog(
+        this.name,
+        'parser',
+        `No match found for ${query}, caching`
+      )
       await app.cache.set(`${this.name}_${query}`, null)
       return null
     }
@@ -138,7 +142,11 @@ export class Sneedex {
       })
     }
 
-    debugLog(this.name, 'parser', `Parsed data, caching ${this.name}_${query}`)
+    Utils.debugLog(
+      this.name,
+      'parser',
+      `Parsed data, caching ${this.name}_${query}`
+    )
     await app.cache.set(`${this.name}_${query}`, actualRelease as ISneedexData)
 
     return actualRelease as ISneedexData

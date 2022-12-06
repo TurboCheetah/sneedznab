@@ -4,10 +4,10 @@ import { IProvider } from '#interfaces/provider'
 import { ITorrentRelease } from '#interfaces/releases'
 import { ISneedexRelease } from '#interfaces/sneedex'
 import { app } from '#/index'
-import { debugLog } from '#utils/debugLog'
+import { Utils } from '#utils/Utils'
 
 export class AnimeBytes implements IProvider {
-  public name: string
+  readonly name: string
   constructor(private passkey: string, private username: string) {
     if (!passkey || !username) {
       throw new Error('No AnimeBytes credentials provided')
@@ -20,19 +20,19 @@ export class AnimeBytes implements IProvider {
 
   // provider specific fetch function to retrieve raw data
   private async fetch(query: string): Promise<IAnimeBytesData> {
-    debugLog(this.name, 'cache', `${this.name}_${query}`)
+    Utils.debugLog(this.name, 'cache', `${this.name}_${query}`)
     const cachedData = await app.cache.get(`${this.name}_${query}`)
     if (cachedData) {
-      debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
+      Utils.debugLog(this.name, 'cache', `Cache hit: ${this.name}_${query}`)
       return cachedData as IAnimeBytesData
     }
-    debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
+    Utils.debugLog(this.name, 'cache', `Cache miss: ${this.name}_${query}`)
 
     const searchURL = `${animebytesUrl}?torrent_pass=${this.passkey}&username=${
       this.username
     }&type=anime&searchstr=${encodeURIComponent(query)}`
-    debugLog(this.name, 'fetch', query)
-    debugLog(
+    Utils.debugLog(this.name, 'fetch', query)
+    Utils.debugLog(
       this.name,
       'fetch',
       `Fetching data from ${searchURL.replace(
@@ -45,7 +45,11 @@ export class AnimeBytes implements IProvider {
       return res.json()
     })
 
-    debugLog(this.name, 'fetch', `Fetched data, caching ${this.name}_${query}`)
+    Utils.debugLog(
+      this.name,
+      'fetch',
+      `Fetched data, caching ${this.name}_${query}`
+    )
     await app.cache.set(`${this.name}_${query}`, data)
 
     return data as IAnimeBytesData

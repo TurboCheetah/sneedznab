@@ -20,6 +20,9 @@
       "#interfaces/*": [
         "interfaces/*"
       ],
+      "#providers/*": [
+        "providers/*"
+      ],
       "#routes/*": [
         "routes/*"
       ],

@@ -1,11 +1,11 @@
 import { App } from '#/app'
 import { ApiRoute } from '#routes/api'
-import { AnimeTosho } from '#utils/AnimeTosho'
-import { AnimeBytes } from '#utils/AnimeBytes'
-import { Rutracker } from '#utils/Rutracker'
-import { RedisCache } from '#utils/redis'
+import { AnimeTosho } from '#providers/AnimeTosho'
+import { AnimeBytes } from '#providers/AnimeBytes'
+import { Rutracker } from '#providers/Rutracker'
+import { RedisCache } from '#utils/Redis'
 import { Redis } from '@upstash/redis'
-import { SimpleCache } from '#utils/simpleCache'
+import { SimpleCache } from '#utils/SimpleCache'
 import * as NodeCache from 'node-cache'
 
 export const app = new App(
