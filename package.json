@@ -23,7 +23,7 @@
     "@upstash/redis": "1.18.1",
     "fuse.js": "6.6.2",
     "hono": "2.5.8",
-    "node-cache": "5.1.2",
+    "lru-cache": "7.14.1",
     "picocolors": "1.0.0"
   },
   "devDependencies": {

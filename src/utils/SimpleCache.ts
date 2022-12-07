@@ -1,13 +1,10 @@
 import { ICache } from '#interfaces/cache'
-import * as NodeCache from 'node-cache'
+import * as LRU from 'lru-cache'
 
 export class SimpleCache implements ICache {
-  private cache: NodeCache
-  constructor(private ttl: number) {
-    this.cache = new NodeCache({
-      stdTTL: ttl,
-      checkperiod: 10
-    })
+  private cache: LRU<string, any>
+  constructor() {
+    this.cache = new LRU({ max: 250 })
   }
 
   public async set(key: string, value: any): Promise<void> {

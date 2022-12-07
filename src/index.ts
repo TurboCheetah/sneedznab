@@ -13,7 +13,7 @@ export const app = new App(
         process.env.REDIS_TOKEN,
         +process.env.CACHE_TTL
       )
-    : new SimpleCache(+process.env.CACHE_TTL),
+    : new SimpleCache(),
   [
     // AnimeTosho is used instead of scraping Nyaa
     process.env.ANIMETOSHO_ENABLED ? new AnimeTosho() : null,
