@@ -17,14 +17,16 @@ export const app = new App(
   ), */
   [
     // AnimeTosho is used instead of scraping Nyaa
-    new AnimeTosho(),
+    process.env.ANIMETOSHO_ENABLED ? new AnimeTosho() : null,
     // Only enable AnimeBytes if you have an account
-    new AnimeBytes(
-      process.env.ANIMEBYTES_PASSKEY,
-      process.env.ANIMEBYTES_USERNAME
-    ),
-    new Rutracker()
-  ],
+    process.env.ANIMEBYTES_ENABLED
+      ? new AnimeBytes(
+          process.env.ANIMEBYTES_PASSKEY,
+          process.env.ANIMEBYTES_USERNAME
+        )
+      : null,
+    process.env.RUTRACKER_ENABLED ? new Rutracker() : null
+  ].filter(provider => provider !== null),
   [new ApiRoute()]
 )
 
