@@ -15,9 +15,20 @@ git clone https://github.com/TurboCheetah/sneedznab.git
 cd sneedznab
 ```
 
-Copy `.env.example` to `.env` and put the appropriate API keys in there.
+Edit the environment variables in `docker-compose.yml` to suit your needs.
 
 Finally, spin up a Docker container using `docker-compose up -d`.
+
+## Explaination of environment variables
+
+- `<PROVIDER>_ENABLED`: when set to true Sneedznab will search this provider for the requested anime
+- `ANIMEBYTES_PASSKEY`: your AnimeBytes passkey. Only required if `ANIMEBYTES_ENABLED` is set to `true`. See above for where to obtain it
+- `ANIMEBYTES_USERNAME`: your AnimeBytes usersname. Only required if `ANIMEBYTES_ENABLED` is set to `true`. This is required for interacting with their API
+- `REDIS_ENABLED`: determines whether or not to use Redis as the cache provider instead of a local in-memory cache
+- `REDIS_URL`: the URL to the Redis database hosted by Upstash. Only required if `REDIS_ENABLED` is set to `true`. See above for where to obtain it
+- `REDIS_TOKEN`: the token used to access the Redis database. Only required if `REDIS_ENABLED` is set to `true`
+- `CACHE_TTL`: how long a cached entry should live in the cache for
+- `DEBUG`: toggles verbose logging
 
 ## Segmentation Faults
 
