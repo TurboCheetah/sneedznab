@@ -75,30 +75,16 @@ export class AnimeTosho implements IProvider {
         // TODO: Find a better way of getting stuff directly from Nyaa
         if (!nyaaID) return null
 
-        return [
-          {
-            title: `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
-              anime.title
-            }`,
-            link: `https://nyaa.si/download/${nyaaID}.torrent`,
-            url: `https://nyaa.si/view/${nyaaID}`,
-            seeders: 0,
-            leechers: 0,
-            infohash: '',
-            size: 0,
-            files: 0,
-            timestamp: Utils.formatDate(new Date()),
-            grabs: 0,
-            type: 'torrent'
-          }
-        ]
+        return this.parseNyaa(anime, sneedexData, +nyaaID)
       }
+
       data = await this.fetch(
         `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
           anime.alias
         }`
       )
     }
+
     const matchedRelease = data.find((data: IToshoData) =>
       nyaaID
         ? data.nyaa_id === +nyaaID
@@ -108,7 +94,11 @@ export class AnimeTosho implements IProvider {
     )
 
     // if no valid release was found, reutrn null
-    if (!matchedRelease) return null
+    if (!matchedRelease && !nyaaID) {
+      return null
+    } else if (!matchedRelease && nyaaID) {
+      return this.parseNyaa(anime, sneedexData, +nyaaID)
+    }
 
     // convert matchedRelease.timestamp to the format YYYY-MM-DD HH:MM:SS
     const formattedDate = Utils.formatDate(matchedRelease.timestamp * 1000)
@@ -144,5 +134,29 @@ export class AnimeTosho implements IProvider {
     })
 
     return releases
+  }
+
+  private parseNyaa(
+    anime: { title: string; alias: string },
+    sneedexData: ISneedexRelease,
+    nyaaID: number
+  ): ITorrentRelease[] {
+    return [
+      {
+        title: `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
+          anime.title
+        }`,
+        link: `https://nyaa.si/download/${nyaaID}.torrent`,
+        url: `https://nyaa.si/view/${nyaaID}`,
+        seeders: 0,
+        leechers: 0,
+        infohash: '',
+        size: 0,
+        files: 0,
+        timestamp: Utils.formatDate(new Date()),
+        grabs: 0,
+        type: 'torrent'
+      }
+    ]
   }
 }
