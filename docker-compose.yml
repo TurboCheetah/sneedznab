@@ -4,8 +4,18 @@ services:
   sneedznab:
     image: ghcr.io/turbocheetah/sneedznab:master
     container_name: sneedznab
-    env_file:
-      - .env
+    environment:
+      - ANIMETOSHO_ENABLED=true
+      - RUTRACKER_ENABLED=true
+      - ANIMEBYTES_ENABLED=true
+      - ANIMEBYTES_PASSKEY=
+      - ANIMEBYTES_USERNAME=
+      # If using Redis cache set the URL and token using the values from Upstash
+      - REDIS_ENABLED=false
+      - REDIS_URL=
+      - REDIS_TOKEN=
+      - CACHE_TTL=120
+      - DEBUG=true
     ports:
       - '3000:3000'
     restart: 'unless-stopped'
