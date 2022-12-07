@@ -107,8 +107,8 @@ export class ApiRoute implements IRoute {
         // Releases are typically just each individual season
         for (const release of sneedexData.releases) {
           const sneedQuery = {
-            title: sneedexData.title,
-            alias: sneedexData.alias
+            title: sneedexData.title.replace(/ \(\d{4}\)/gi, ''),
+            alias: sneedexData.alias.replace(/ \(\d{4}\)/gi, '')
           }
 
           const results = (
