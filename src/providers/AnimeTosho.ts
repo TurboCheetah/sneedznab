@@ -146,8 +146,8 @@ export class AnimeTosho implements IProvider {
         title: `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
           anime.title
         }`,
-        link: `https://nyaa.si/download/${nyaaID}.torrent`,
-        url: `https://nyaa.si/view/${nyaaID}`,
+        link: `https://nyaa.si/view/${nyaaID}`,
+        url: `https://nyaa.si/download/${nyaaID}.torrent`,
         seeders: 0,
         leechers: 0,
         infohash: null,
