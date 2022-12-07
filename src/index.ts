@@ -7,14 +7,13 @@ import { RedisCache } from '#utils/Redis'
 import { SimpleCache } from '#utils/SimpleCache'
 
 export const app = new App(
-  new SimpleCache(+process.env.CACHE_TTL),
-  // If you would like to use Redis instead, comment out the line above and uncomment the line below
-  /*
-    new RedisCache(
-    process.env.REDIS_URL,
-    process.env.REDIS_TOKEN,
-    +process.env.CACHE_TTL
-  ), */
+  process.env.REDIS_ENABLED
+    ? new RedisCache(
+        process.env.REDIS_URL,
+        process.env.REDIS_TOKEN,
+        +process.env.CACHE_TTL
+      )
+    : new SimpleCache(+process.env.CACHE_TTL),
   [
     // AnimeTosho is used instead of scraping Nyaa
     process.env.ANIMETOSHO_ENABLED ? new AnimeTosho() : null,
