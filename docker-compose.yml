@@ -7,7 +7,8 @@ services:
     environment:
       - ANIMETOSHO_ENABLED=true
       - RUTRACKER_ENABLED=true
-      - ANIMEBYTES_ENABLED=true
+      # Only enable AB if you have access to it
+      - ANIMEBYTES_ENABLED=false
       - ANIMEBYTES_PASSKEY=
       - ANIMEBYTES_USERNAME=
       # If using Redis cache set the URL and token using the values from Upstash
