@@ -150,7 +150,7 @@ export class AnimeTosho implements IProvider {
         url: `https://nyaa.si/view/${nyaaID}`,
         seeders: 0,
         leechers: 0,
-        infohash: '',
+        infohash: null,
         size: 0,
         files: 0,
         timestamp: Utils.formatDate(new Date()),
