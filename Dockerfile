@@ -28,7 +28,6 @@ RUN apt-get update && apt-get install -y curl unzip
 RUN curl https://bun.sh/install | bash
 RUN $HOME/.bun/bin/bun install
 RUN cp $HOME/.bun/bin/bun /bin
-RUN bun upgrade --canary
 
 COPY . .
 
