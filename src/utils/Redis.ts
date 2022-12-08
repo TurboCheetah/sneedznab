@@ -1,4 +1,4 @@
-import { ICache } from '#interfaces/cache'
+import { ICache } from '#interfaces/index'
 import { Redis } from '@upstash/redis'
 
 export class RedisCache implements ICache {

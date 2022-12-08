@@ -1,4 +1,4 @@
-import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
+import { ITorrentRelease, IUsenetRelease } from '#interfaces/index'
 
 export const escape = (str: string): string => {
   // replace ampersands with &amp;

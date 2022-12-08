@@ -1,8 +1,11 @@
 import { rutrackerUrl } from '#/constants'
-import { IRutrackerData } from '#interfaces/rutracker'
-import { IProvider } from '#interfaces/provider'
-import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
-import { ISneedexRelease } from '#interfaces/sneedex'
+import {
+  IProvider,
+  IRutrackerData,
+  ISneedexRelease,
+  ITorrentRelease,
+  IUsenetRelease
+} from '#interfaces/index'
 import { app } from '#/index'
 import { Utils } from '#utils/Utils'
 

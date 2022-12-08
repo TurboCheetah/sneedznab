@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
-import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
-import { IRoute } from '#interfaces/route'
+import { IRoute, ITorrentRelease, IUsenetRelease } from '#interfaces/index'
 import { app } from '#/index'
 import { Utils } from '#utils/Utils'
 import { rssBuilder } from '#/utils/rss'

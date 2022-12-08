@@ -1,9 +1,6 @@
 import { App } from '#/app'
 import { ApiRoute } from '#routes/api'
-import { AnimeTosho } from '#providers/AnimeTosho'
-import { AnimeBytes } from '#providers/AnimeBytes'
-import { Nyaa } from '#providers/Nyaa'
-import { Rutracker } from '#providers/Rutracker'
+import { AnimeBytes, AnimeTosho, Nyaa, Rutracker } from '#providers/index'
 import { RedisCache } from '#utils/Redis'
 import { SimpleCache } from '#utils/SimpleCache'
 

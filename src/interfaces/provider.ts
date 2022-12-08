@@ -1,5 +1,8 @@
-import { ISneedexRelease } from '#interfaces/sneedex'
-import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
+import {
+  ISneedexRelease,
+  ITorrentRelease,
+  IUsenetRelease
+} from '#interfaces/index'
 
 export interface IProvider {
   name: string

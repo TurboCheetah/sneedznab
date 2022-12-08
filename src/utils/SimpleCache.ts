@@ -1,4 +1,4 @@
-import { ICache } from '#interfaces/cache'
+import { ICache } from '#interfaces/index'
 import * as LRU from 'lru-cache'
 
 export class SimpleCache implements ICache {

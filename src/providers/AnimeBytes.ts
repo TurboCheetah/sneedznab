@@ -1,8 +1,10 @@
 import { animebytesUrl } from '#/constants'
-import { IAnimeBytesData } from '#interfaces/animeBytes'
-import { IProvider } from '#interfaces/provider'
-import { ITorrentRelease } from '#interfaces/releases'
-import { ISneedexRelease } from '#interfaces/sneedex'
+import {
+  IAnimeBytesData,
+  IProvider,
+  ISneedexRelease,
+  ITorrentRelease
+} from '#interfaces/index'
 import { app } from '#/index'
 import { Utils } from '#utils/Utils'
 

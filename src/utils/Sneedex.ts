@@ -3,7 +3,7 @@ import {
   IRawSneedexData,
   ISneedexData,
   ISneedexRelease
-} from '#interfaces/sneedex'
+} from '#interfaces/index'
 import { app } from '#/index'
 import { Utils } from '#utils/Utils'
 import Fuse from 'fuse.js'

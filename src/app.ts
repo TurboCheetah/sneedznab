@@ -1,8 +1,6 @@
 import { Hono } from 'hono'
 import { logger } from 'hono/logger'
-import { ICache } from '#interfaces/cache'
-import { IProvider } from '#interfaces/provider'
-import { IRoute } from '#interfaces/route'
+import { ICache, IProvider, IRoute } from '#interfaces/index'
 import { ApiRoute } from '#routes/api'
 import { Sneedex } from '#utils/Sneedex'
 

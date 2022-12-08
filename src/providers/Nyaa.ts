@@ -1,8 +1,10 @@
 import { nyaaUrl } from '#/constants'
-import { INyaaData } from '#interfaces/nyaa'
-import { IProvider } from '#interfaces/provider'
-import { ITorrentRelease } from '#interfaces/releases'
-import { ISneedexRelease } from '#interfaces/sneedex'
+import {
+  INyaaData,
+  IProvider,
+  ITorrentRelease,
+  ISneedexRelease
+} from '#interfaces/index'
 import { app } from '#/index'
 import { Utils } from '#utils/Utils'
 import { load } from 'cheerio'

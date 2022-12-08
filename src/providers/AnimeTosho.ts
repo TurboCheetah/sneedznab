@@ -1,8 +1,11 @@
 import { toshoUrl } from '#/constants'
-import { IToshoData } from '#interfaces/animeTosho'
-import { IProvider } from '#interfaces/provider'
-import { ITorrentRelease, IUsenetRelease } from '#interfaces/releases'
-import { ISneedexRelease } from '#interfaces/sneedex'
+import {
+  IProvider,
+  ISneedexRelease,
+  ITorrentRelease,
+  IToshoData,
+  IUsenetRelease
+} from '#interfaces/index'
 import { app } from '#/index'
 import { Utils } from '#utils/Utils'
 
