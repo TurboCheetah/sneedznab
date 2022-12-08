@@ -21,6 +21,7 @@
   "homepage": "https://github.com/TurboCheetah/sneedznab#readme",
   "dependencies": {
     "@upstash/redis": "1.18.1",
+    "cheerio": "1.0.0-rc.12",
     "fuse.js": "6.6.2",
     "hono": "2.5.8",
     "lru-cache": "7.14.1",

@@ -2,6 +2,7 @@ import { App } from '#/app'
 import { ApiRoute } from '#routes/api'
 import { AnimeTosho } from '#providers/AnimeTosho'
 import { AnimeBytes } from '#providers/AnimeBytes'
+import { Nyaa } from '#providers/Nyaa'
 import { Rutracker } from '#providers/Rutracker'
 import { RedisCache } from '#utils/Redis'
 import { SimpleCache } from '#utils/SimpleCache'
@@ -15,7 +16,9 @@ export const app = new App(
       )
     : new SimpleCache(),
   [
-    // AnimeTosho is used instead of scraping Nyaa
+    process.env.NYAA_ENABLED ? new Nyaa() : null,
+    // AnimeTosho can be used instead of scraping Nyaa, but it's far less reliable
+    // it's only useful if you want NZBs
     process.env.ANIMETOSHO_ENABLED ? new AnimeTosho() : null,
     // Only enable AnimeBytes if you have an account
     process.env.ANIMEBYTES_ENABLED

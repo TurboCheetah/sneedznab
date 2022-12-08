@@ -70,13 +70,7 @@ export class AnimeTosho implements IProvider {
 
     // if the data is empty, try again with the alias
     if (!data.length) {
-      if (!anime.alias.length) {
-        // if there was a nyaa link, return a very basic entry as there is no way to get the missing data
-        // TODO: Find a better way of getting stuff directly from Nyaa
-        if (!nyaaID) return null
-
-        return this.parseNyaa(anime, sneedexData, +nyaaID)
-      }
+      if (!anime.alias.length) return null
 
       data = await this.fetch(
         `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
@@ -94,11 +88,7 @@ export class AnimeTosho implements IProvider {
     )
 
     // if no valid release was found, reutrn null
-    if (!matchedRelease && !nyaaID) {
-      return null
-    } else if (!matchedRelease && nyaaID) {
-      return this.parseNyaa(anime, sneedexData, +nyaaID)
-    }
+    if (!matchedRelease) return null
 
     // convert matchedRelease.timestamp to the format YYYY-MM-DD HH:MM:SS
     const formattedDate = Utils.formatDate(matchedRelease.timestamp * 1000)
@@ -134,29 +124,5 @@ export class AnimeTosho implements IProvider {
     })
 
     return releases
-  }
-
-  private parseNyaa(
-    anime: { title: string; alias: string },
-    sneedexData: ISneedexRelease,
-    nyaaID: number
-  ): ITorrentRelease[] {
-    return [
-      {
-        title: `${sneedexData.best ? sneedexData.best : sneedexData.alt} ${
-          anime.title
-        }`,
-        link: `https://nyaa.si/view/${nyaaID}`,
-        url: `https://nyaa.si/download/${nyaaID}.torrent`,
-        seeders: 0,
-        leechers: 0,
-        infohash: null,
-        size: 0,
-        files: 0,
-        timestamp: Utils.formatDate(new Date()),
-        grabs: 0,
-        type: 'torrent'
-      }
-    ]
   }
 }

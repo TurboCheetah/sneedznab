@@ -5,7 +5,9 @@ services:
     image: ghcr.io/turbocheetah/sneedznab:master
     container_name: sneedznab
     environment:
-      - ANIMETOSHO_ENABLED=true
+      - NYAA_ENABLED=true
+      # AnimeTosho is only useful if you want NZBs
+      - ANIMETOSHO_ENABLED=false
       - RUTRACKER_ENABLED=true
       # Only enable AB if you have access to it
       - ANIMEBYTES_ENABLED=false
