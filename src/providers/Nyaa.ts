@@ -133,6 +133,9 @@ export class Nyaa implements IProvider {
           ? +size[0] * 1024 * 1024 * 1024
           : +size[0] * 1024 * 1024
 
+      // remove decimal places from the size in bytes to comply with Torznab
+      const sizeInBytesRounded = Math.round(sizeInBytes)
+
       const formattedDate = Utils.formatDate(
         new Date(data.date.replace(' UTC', '')).getTime()
       )
@@ -144,7 +147,7 @@ export class Nyaa implements IProvider {
         seeders: data.seeders,
         leechers: data.leechers,
         infohash: data.infohash,
-        size: sizeInBytes,
+        size: sizeInBytesRounded,
         files: data.files,
         timestamp: formattedDate,
         grabs: data.completed,
