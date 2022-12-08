@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   sneedznab:
-    image: ghcr.io/turbocheetah/sneedznab:master
+    image: ghcr.io/turbocheetah/sneedznab:latest
     container_name: sneedznab
     environment:
       - NYAA_ENABLED=true
