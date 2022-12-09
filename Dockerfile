@@ -1,4 +1,13 @@
-FROM debian:latest as runner
+FROM debian:stable-slim as builder
+
+RUN apt-get update && apt-get install -y curl unzip
+
+RUN curl https://bun.sh/install | bash
+RUN cp $HOME/.bun/bin/bun /bin
+
+FROM debian:stable-slim as runner
+
+COPY --from=builder /bin/bun /bin/bun
 
 WORKDIR /app
 
@@ -23,11 +32,7 @@ RUN addgroup \
 
 COPY package.json bun.lockb ./
 
-RUN apt-get update && apt-get install -y curl unzip
-
-RUN curl https://bun.sh/install | bash
-RUN $HOME/.bun/bin/bun install
-RUN cp $HOME/.bun/bin/bun /bin
+RUN bun install
 
 COPY . .
 
