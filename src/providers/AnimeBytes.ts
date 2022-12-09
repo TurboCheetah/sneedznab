@@ -115,12 +115,22 @@ export class AnimeBytes implements IProvider {
         )
 
         // format the title to TVDB format
+        /*
+        Example values for props:
+            props[0] = "Blu-ray"
+            props[1] = "MKV"
+            props[2] = "h264 10-bit"
+            props[3] = 1080
+            props[4] = "FLAC 2.0"
+            props[5] = "Softsubs"
+        */
+        const [medium, container, codec, resolution, audio, subs] = props
         return {
           title: `${anime.title}${
             sneedexData.type ? ` ${sneedexData.type}` : ''
-          } [${props[3]} ${props[0]} ${props[2]} ${props[4]}${
-            dualAudio ? ' Dual Audio' : ''
-          }]-${releaseGroup}`,
+          } [${medium}-${props[3]}][${codec.split(' ')[1]}][${
+            codec.split(' ')[0]
+          }][${audio}]${dualAudio ? '[EN+JA]' : '[JA]'}-${releaseGroup}`,
           link: torrent.Link,
           url: torrent.Link,
           seeders: torrent.Seeders,
