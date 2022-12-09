@@ -125,10 +125,14 @@ export class AnimeBytes implements IProvider {
             props[5] = "Softsubs"
         */
         const [medium, container, codec, resolution, audio, subs] = props
+        // get the bitdepth from codec by splitting it and checking if it has either 10-bit or 8-bit
+        // if it has nothing return 8-bit
+        const bitDepth =
+          codec.split(' ').find(text => text.includes('bit')) || '8-bit'
         return {
           title: `${anime.title}${
             sneedexData.type ? ` ${sneedexData.type}` : ''
-          } [${medium}-${props[3]}][${codec.split(' ')[1]}][${
+          } [${medium}-${props[3]}][${bitDepth}][${
             codec.split(' ')[0]
           }][${audio}]${dualAudio ? '[EN+JA]' : '[JA]'}-${releaseGroup}`,
           link: torrent.Link,
