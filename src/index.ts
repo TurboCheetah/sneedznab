@@ -11,7 +11,7 @@ export const app = new App(
         process.env.REDIS_TOKEN,
         +process.env.CACHE_TTL
       )
-    : new SimpleCache(),
+    : new SimpleCache(+process.env.CACHE_TTL),
   [
     process.env.NYAA_ENABLED === 'true' ? new Nyaa() : null,
     // AnimeTosho can be used instead of scraping Nyaa, but it's far less reliable

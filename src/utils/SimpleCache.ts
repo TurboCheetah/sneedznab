@@ -3,8 +3,8 @@ import * as LRU from 'lru-cache'
 
 export class SimpleCache implements ICache {
   private cache: LRU<string, any>
-  constructor() {
-    this.cache = new LRU({ max: 250 })
+  constructor(private ttl: number) {
+    this.cache = new LRU({ max: 250, ttl: this.ttl })
   }
 
   public async set(key: string, value: any): Promise<void> {
