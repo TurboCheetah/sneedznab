@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/TurboCheetah/sneedznab#readme",
   "dependencies": {
-    "@upstash/redis": "1.18.1",
+    "@upstash/redis": "1.18.4",
     "cheerio": "1.0.0-rc.12",
     "fuse.js": "6.6.2",
     "hono": "2.6.2",
@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "@types/eslint": "8.4.10",
-    "@typescript-eslint/eslint-plugin": "5.46.1",
-    "@typescript-eslint/parser": "5.46.1",
-    "bun-types": "0.3.0",
+    "@typescript-eslint/eslint-plugin": "5.47.0",
+    "@typescript-eslint/parser": "5.47.0",
+    "bun-types": "0.4.0",
     "eslint": "8.30.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
