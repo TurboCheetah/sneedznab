@@ -5,7 +5,7 @@ import { RedisCache } from '#utils/Redis'
 import { SimpleCache } from '#utils/SimpleCache'
 
 export const app = new App(
-  process.env.REDIS_ENABLED === 'true'
+  process.env.REDIS_ENABLED.toLowerCase() === 'true'
     ? new RedisCache(
         process.env.REDIS_URL,
         process.env.REDIS_TOKEN,
@@ -13,18 +13,22 @@ export const app = new App(
       )
     : new SimpleCache(+process.env.CACHE_TTL),
   [
-    process.env.NYAA_ENABLED === 'true' ? new Nyaa() : null,
+    process.env.NYAA_ENABLED.toLowerCase() === 'true' ? new Nyaa() : null,
     // AnimeTosho can be used instead of scraping Nyaa, but it's far less reliable
     // it's only useful if you want NZBs
-    process.env.ANIMETOSHO_ENABLED === 'true' ? new AnimeTosho() : null,
+    process.env.ANIMETOSHO_ENABLED.toLowerCase() === 'true'
+      ? new AnimeTosho()
+      : null,
     // Only enable AnimeBytes if you have an account
-    process.env.ANIMEBYTES_ENABLED === 'true'
+    process.env.ANIMEBYTES_ENABLED.toLowerCase() === 'true'
       ? new AnimeBytes(
           process.env.ANIMEBYTES_PASSKEY,
           process.env.ANIMEBYTES_USERNAME
         )
       : null,
-    process.env.RUTRACKER_ENABLED === 'true' ? new Rutracker() : null
+    process.env.RUTRACKER_ENABLED.toLowerCase() === 'true'
+      ? new Rutracker()
+      : null
   ].filter(provider => provider !== null),
   [new ApiRoute()]
 )
