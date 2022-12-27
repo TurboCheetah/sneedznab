@@ -3,6 +3,7 @@ import { logger } from 'hono/logger'
 import { ICache, IProvider, IRoute } from '#interfaces/index'
 import { ApiRoute } from '#routes/api'
 import { Sneedex } from '#utils/Sneedex'
+import pkg from '../package.json'
 
 export class App {
   public app: Hono
@@ -20,6 +21,16 @@ export class App {
 
     this.initializeMiddlewares()
     this.initializeRoutes()
+
+    console.log(
+      `Sneedznab v${pkg.version} started\nCache: ${
+        this.cache.name
+      }\nProviders: ${this.providers
+        .map(provider => provider.name)
+        .join(', ')}\nRoutes: ${this.routes
+        .map(route => route.path)
+        .join(', ')}`
+    )
   }
 
   public getServer() {

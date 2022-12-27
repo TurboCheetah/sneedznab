@@ -11,6 +11,8 @@
     ],
     "moduleResolution": "Node",
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "outDir": "./dist",
     "paths": {
