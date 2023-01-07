@@ -13,7 +13,7 @@ export interface IAnimeBytesData {
     Year: string
     Image: string
     Synonyms: string[]
-    Snacthed: number
+    Snatched: number
     Comments: number
     Links: {
       AniDB: string
