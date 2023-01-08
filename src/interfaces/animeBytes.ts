@@ -46,7 +46,10 @@ export interface IAnimeBytesData {
       Leechers: number
       Size: number
       FileCount: number
-      FileList: string[]
+      FileList: {
+        filename: string
+        size: string
+      }[]
       UploadTime: string
     }[]
   }[]
