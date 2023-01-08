@@ -9,7 +9,14 @@ export interface IAnimeBytesData {
     GroupsName: string
     SeriesID: string
     SeriesName: string
-    Artists: null
+    Artists: {
+      [artistID: string]: {
+        name: string
+        character: {
+          [characterID: string]: string
+        }
+      }
+    }
     Year: string
     Image: string
     Synonyms: string[]
