@@ -1,26 +1,12 @@
-FROM debian:stable-slim as builder
-
-RUN apt-get update && apt-get install -y curl unzip
-
-RUN curl https://bun.sh/install | bash
-RUN cp $HOME/.bun/bin/bun /bin
-
-FROM debian:stable-slim as runner
-
-COPY --from=builder /bin/bun /bin/bun
+FROM oven/bun:0.5.6 as runner
 
 WORKDIR /app
 
 ENV GROUP=bun
 ENV USER=sneedex
 ENV UID=1001
-ENV GID=1001
 
-RUN addgroup \
-  --system \
-  --gid "${GID}" \
-  "${GROUP}" \
-  && adduser \
+RUN adduser \
   --system \
   --disabled-password \
   --gecos "" \
