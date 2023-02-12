@@ -99,23 +99,30 @@ export class AnimeBytes implements IProvider {
     )
       .map(group => group.Torrents)
       .flat()
-      // only parse the torrents where the torrent id is in the torrentIDs array
-      // and then map it to the appropriate values
-      .filter(torrent => torrentIDs.includes(torrent.ID))
-      .map(torrent => {
-        const props = torrent.Property.split('|').map(s => s.trim())
 
-        // the release group is always after the text "softsubs", so we can just find the part that includes that then use a regex
-        const releaseGroup = props
-          .find(prop => prop.includes('subs'))
-          .match(/\((.*?)\)/)[1]
+    const hashMap = {}
+    animeData.forEach(torrent => {
+      hashMap[torrent.ID] = torrent
+    })
 
-        const dualAudio = props.find(prop =>
-          prop.toLowerCase().includes('dual audio')
-        )
+    const result = torrentIDs.map(torrentID => {
+      const torrent = hashMap[torrentID]
+      const group = data.Groups.find(group => group.Torrents.includes(torrent))
+      console.log(torrent)
 
-        // format the title to TVDB format
-        /*
+      const props = torrent.Property.split('|').map(s => s.trim())
+
+      // the release group is always after the text "softsubs", so we can just find the part that includes that then use a regex
+      const releaseGroup = props
+        .find(prop => prop.includes('subs'))
+        .match(/\((.*?)\)/)[1]
+
+      const dualAudio = props.find(prop =>
+        prop.toLowerCase().includes('dual audio')
+      )
+
+      // format the title to TVDB format
+      /*
         Example values for props:
             props[0] = "Blu-ray"
             props[1] = "MKV"
@@ -124,30 +131,30 @@ export class AnimeBytes implements IProvider {
             props[4] = "FLAC 2.0"
             props[5] = "Softsubs"
         */
-        const [medium, container, codec, resolution, audio, subs] = props
-        // get the bitdepth from codec by splitting it and checking if it has either 10-bit or 8-bit
-        // if it has nothing return 8-bit
-        const bitDepth =
-          codec.split(' ').find(text => text.includes('bit')) || '8-bit'
-        return {
-          title: `${anime.title}${
-            sneedexData.type ? ` ${sneedexData.type}` : ''
-          } [${medium}-${props[3]}][${bitDepth}][${
-            codec.split(' ')[0]
-          }][${audio}]${dualAudio ? '[EN+JA]' : '[JA]'}-${releaseGroup}`,
-          link: torrent.Link,
-          url: torrent.Link,
-          seeders: torrent.Seeders,
-          leechers: torrent.Leechers,
-          infohash: null,
-          size: torrent.Size,
-          files: torrent.FileCount,
-          timestamp: torrent.UploadTime,
-          grabs: torrent.Snatched,
-          type: 'torrent'
-        }
-      })
+      const [medium, container, codec, resolution, audio, subs] = props
+      // get the bitdepth from codec by splitting it and checking if it has either 10-bit or 8-bit
+      // if it has nothing return 8-bit
+      const bitDepth =
+        codec.split(' ').find(text => text.includes('bit')) || '8-bit'
+      return {
+        title: `${anime.title}${
+          sneedexData.type ? ` ${sneedexData.type}` : ''
+        } [${medium}-${props[3]}][${bitDepth}][${
+          codec.split(' ')[0]
+        }][${audio}]${dualAudio ? '[EN+JA]' : '[JA]'}-${releaseGroup}`,
+        link: `https://animebytes.tv/torrents.php?id=${group.ID}&torrentid=${torrent.ID}`,
+        url: torrent.Link,
+        seeders: torrent.Seeders,
+        leechers: torrent.Leechers,
+        infohash: null,
+        size: torrent.Size,
+        files: torrent.FileCount,
+        timestamp: torrent.UploadTime,
+        grabs: torrent.Snatched,
+        type: 'torrent'
+      }
+    })
 
-    return animeData as ITorrentRelease[]
+    return result as ITorrentRelease[]
   }
 }
