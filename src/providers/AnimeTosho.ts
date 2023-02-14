@@ -51,7 +51,7 @@ export class AnimeTosho implements IProvider {
   public async get(
     anime: { title: string; alias: string },
     sneedexData: ISneedexRelease
-  ): Promise<IUsenetRelease[] | ITorrentRelease[]> {
+  ): Promise<(ITorrentRelease | IUsenetRelease)[]> {
     // strip out (WEB) from the best and alt titles
     sneedexData.best = sneedexData.best.replace(/ \(WEB\)/gi, '')
     sneedexData.alt = sneedexData.alt.replace(/ \(WEB\)/gi, '')

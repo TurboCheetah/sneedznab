@@ -99,6 +99,7 @@ export class AnimeBytes implements IProvider {
     )
       .map(group => group.Torrents)
       .flat()
+      .filter(torrent => torrentIDs.includes(torrent.ID))
 
     const hashMap = {}
     animeData.forEach(torrent => {
@@ -107,9 +108,9 @@ export class AnimeBytes implements IProvider {
 
     const result = torrentIDs.map(torrentID => {
       const torrent = hashMap[torrentID]
-      const group = data.Groups.find(group => group.Torrents.includes(torrent))
-      console.log(torrent)
+      if (!torrent) return null
 
+      const group = data.Groups.find(group => group.Torrents.includes(torrent))
       const props = torrent.Property.split('|').map(s => s.trim())
 
       // the release group is always after the text "softsubs", so we can just find the part that includes that then use a regex
