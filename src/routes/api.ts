@@ -110,13 +110,10 @@ export class ApiRoute implements IRoute {
             alias: sneedexData.alias.replace(/ \(\d{4}\)/gi, '')
           }
 
-          const results = (
-            await Promise.all(
-              app.providers.map(
-                async provider => await provider.get(sneedQuery, release)
-              )
-            )
-          ).flat()
+          const results = await app.providerRepository.getResults(
+            sneedQuery,
+            release
+          )
 
           // push each result to either usenetReleases or torrentReleases
           for (const result of results) {

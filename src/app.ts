@@ -3,11 +3,13 @@ import { logger } from 'hono/logger'
 import { ICache, IProvider, IRoute } from '#interfaces/index'
 import { ApiRoute } from '#routes/api'
 import { Sneedex } from '#utils/Sneedex'
+import { ProviderRepository } from '#providers/ProviderRepository'
 import pkg from '../package.json'
 
 export class App {
   public app: Hono
   public sneedex: Sneedex
+  public providerRepository: ProviderRepository
   constructor(
     public cache: ICache,
     public providers: IProvider[],
@@ -18,6 +20,7 @@ export class App {
     this.providers = providers
     this.routes = routes
     this.sneedex = new Sneedex()
+    this.providerRepository = new ProviderRepository(this.providers)
 
     this.initializeMiddlewares()
     this.initializeRoutes()

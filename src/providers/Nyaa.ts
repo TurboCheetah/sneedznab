@@ -155,6 +155,6 @@ export class Nyaa implements IProvider {
       }
     })
 
-    return releases
+    return releases as ITorrentRelease[]
   }
 }
