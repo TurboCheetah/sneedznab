@@ -23,7 +23,7 @@
     "@upstash/redis": "1.20.0",
     "cheerio": "1.0.0-rc.12",
     "fuse.js": "6.6.2",
-    "hono": "2.7.8",
+    "hono": "3.0.0",
     "lru-cache": "7.16.1",
     "picocolors": "1.0.0"
   },
