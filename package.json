@@ -23,14 +23,14 @@
     "@upstash/redis": "1.20.1",
     "cheerio": "1.0.0-rc.12",
     "fuse.js": "6.6.2",
-    "hono": "3.0.3",
+    "hono": "3.1.1",
     "lru-cache": "7.18.3",
     "picocolors": "1.0.0"
   },
   "devDependencies": {
-    "@types/eslint": "8.21.1",
-    "@typescript-eslint/eslint-plugin": "5.54.1",
-    "@typescript-eslint/parser": "5.54.1",
+    "@types/eslint": "8.21.2",
+    "@typescript-eslint/eslint-plugin": "5.55.0",
+    "@typescript-eslint/parser": "5.55.0",
     "bun-types": "0.5.7",
     "eslint": "8.36.0",
     "eslint-config-prettier": "8.7.0",
