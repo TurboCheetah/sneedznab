@@ -1,4 +1,4 @@
-FROM oven/bun:0.5.8 as runner
+FROM oven/bun:0.5.9 as runner
 
 WORKDIR /app
 
