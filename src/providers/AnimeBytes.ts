@@ -32,7 +32,7 @@ export class AnimeBytes implements IProvider {
 
     const searchURL = `${animebytesUrl}?torrent_pass=${this.passkey}&username=${
       this.username
-    }&type=anime&searchstr=${encodeURIComponent(query)}`
+    }&type=anime&searchstr=${encodeURIComponent(query)}&containers[mkv]=1&containers[mp4]=1&limit=50`
     Utils.debugLog(this.name, 'fetch', query)
     Utils.debugLog(
       this.name,
