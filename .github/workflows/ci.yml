@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install Node.js
-        uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           node-version: 16
       - uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
@@ -49,7 +49,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install Node.js
-        uses: actions/setup-node@e33196f7422957bea03ed53f6fbb155025ffc7b8 # v3
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3
         with:
           node-version: 16
       - uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
