@@ -34,6 +34,8 @@ export class ApiRoute implements IRoute {
         </searching>
         <categories>
           <category id="5070" name="Anime" description="Anime"/>
+          <category id="2000" name="Movies" description="Movies"/>
+          <category id="2020" name="Movies/Other" description="Movies/Other"/>
         </categories>
       </caps>`,
           200,
