@@ -24,7 +24,7 @@
     "cheerio": "1.0.0-rc.12",
     "fuse.js": "6.6.2",
     "hono": "3.3.4",
-    "lru-cache": "7.18.3",
+    "lru-cache": "10.4.0",
     "picocolors": "1.0.0"
   },
   "devDependencies": {
