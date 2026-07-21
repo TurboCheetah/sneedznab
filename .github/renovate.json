@@ -32,7 +32,7 @@
       "matchJsonata": [
         "$exists(vulnerabilityFixVersion)"
       ],
-      "labels": [
+      "addLabels": [
         "security"
       ],
       "automerge": false
@@ -40,7 +40,7 @@
   ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
-    "labels": [
+    "addLabels": [
       "security"
     ],
     "automerge": false,
