@@ -35,7 +35,7 @@
       "addLabels": [
         "security"
       ],
-      "automerge": false
+      "automerge": true
     }
   ],
   "osvVulnerabilityAlerts": true,
@@ -43,7 +43,7 @@
     "addLabels": [
       "security"
     ],
-    "automerge": false,
+    "automerge": true,
     "vulnerabilityFixStrategy": "lowest"
   }
 }
