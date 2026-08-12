@@ -27,21 +27,6 @@
         "major"
       ],
       "automerge": false
-    },
-    {
-      "matchJsonata": [
-        "isVulnerabilityAlert = true"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "addLabels": [
-        "security"
-      ],
-      "automerge": true
     }
   ],
   "osvVulnerabilityAlerts": true,
