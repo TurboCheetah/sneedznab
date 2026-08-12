@@ -1,12 +1,39 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", "helpers:pinGitHubActionDigests", "group:allNonMajor"],
-  "labels": ["Meta: Dependencies"],
-  "schedule": ["before 12pm on Sunday"],
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+    "group:allNonMajor",
+    ":enableVulnerabilityAlerts"
+  ],
+  "labels": [
+    "Meta: Dependencies"
+  ],
+  "schedule": [
+    "before 12pm on Sunday"
+  ],
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
       "automerge": true
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
     }
-  ]
+  ],
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "addLabels": [
+      "security"
+    ],
+    "vulnerabilityFixStrategy": "lowest"
+  }
 }
