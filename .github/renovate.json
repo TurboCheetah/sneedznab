@@ -30,7 +30,13 @@
     },
     {
       "matchJsonata": [
-        "$exists(vulnerabilityFixVersion)"
+        "isVulnerabilityAlert = true"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
       ],
       "addLabels": [
         "security"
@@ -43,7 +49,6 @@
     "addLabels": [
       "security"
     ],
-    "automerge": true,
     "vulnerabilityFixStrategy": "lowest"
   }
 }
